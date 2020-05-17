@@ -12,6 +12,8 @@ GLFWwindow* window;
 // Include GLM
 #include <glm/glm.hpp>
 
+#include <assimp/texture.h>
+
 #include <shader.hpp>
 
 using namespace glm;

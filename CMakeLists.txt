@@ -9,7 +9,8 @@ include_directories(
     common/
     external/glfw/include/
     external/glew/include/
-    external/glm
+	external/glm
+	external/assimp/include/
 )
 
 set(ALL_LIBS

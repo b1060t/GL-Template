@@ -36,3 +36,27 @@ target_link_libraries(GLEW
 	${OPENGL_LIBRARY}
 	${EXTRA_LIBS}
 )
+
+
+include_directories(assimp/code)
+include_directories(assimp/contrib/zlib)
+include_directories(assimp/contrib/irrXML)
+add_compile_options(-Wa,-mbig-obj)
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/assimp/include/assimp/config.h.in
+	${CMAKE_CURRENT_SOURCE_DIR}/assimp/include/assimp/config.h
+)
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/assimp/contrib/zlib/zconf.h.included
+	${CMAKE_CURRENT_SOURCE_DIR}/assimp/contrib/zlib/zconf.h
+)
+#add_definitions(-Wno-error)
+#add_subdirectory(assimp/contrib/zlib)
+
+set(LIB_INSTALL_DIR "lib")
+set(LIBASSIMP_COMPONENT libassimp)
+set(ZLIB_LIBRARIES zlib)
+set(BUILD_STATIC_LIB ON)
+set(ASSIMP_WERROR OFF)
+
+add_subdirectory(assimp/code)

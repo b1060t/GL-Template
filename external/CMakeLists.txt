@@ -41,19 +41,64 @@ target_link_libraries(GLEW
 include_directories(assimp/code)
 include_directories(assimp/contrib/zlib)
 include_directories(assimp/contrib/irrXML)
-add_compile_options(-Wa,-mbig-obj)
+if (MSVC)
+	add_compile_options(/bigobj)
+elseif(CMAKE_COMPILER_IS_MINGW)
+	add_compile_options(-Wa,-mbig-obj)
+endif()
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/assimp/include/assimp/config.h.in
+	${CMAKE_CURRENT_BINARY_DIR}/assimp/include/assimp/config.h
+)
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/assimp/include/assimp/config.h.in
 	${CMAKE_CURRENT_SOURCE_DIR}/assimp/include/assimp/config.h
+)
+SET (ASSIMP_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+SET (ASSIMP_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+SET (ASSIMP_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+SET (ASSIMP_VERSION ${ASSIMP_VERSION_MAJOR}.${ASSIMP_VERSION_MINOR}.${ASSIMP_VERSION_PATCH})
+SET (ASSIMP_SOVERSION 5)
+SET( ASSIMP_PACKAGE_VERSION "0" CACHE STRING "the package-specific version used for uploading the sources" )
+IF(NOT IGNORE_GIT_HASH)
+  # Get the current working branch
+  EXECUTE_PROCESS(
+    COMMAND git rev-parse --abbrev-ref HEAD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_BRANCH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+  )
+  # Get the latest abbreviated commit hash of the working branch
+  EXECUTE_PROCESS(
+    COMMAND git rev-parse --short=8 HEAD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_COMMIT_HASH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+  )
+ENDIF()
+IF(NOT GIT_COMMIT_HASH)
+  SET(GIT_COMMIT_HASH 0)
+ENDIF(NOT GIT_COMMIT_HASH)
+
+IF(ASSIMP_DOUBLE_PRECISION)
+    ADD_DEFINITIONS(-DASSIMP_DOUBLE_PRECISION)
+ENDIF(ASSIMP_DOUBLE_PRECISION)
+CONFIGURE_FILE(
+	${CMAKE_CURRENT_SOURCE_DIR}/assimp/revision.h.in
+	${CMAKE_CURRENT_BINARY_DIR}/assimp/code/common/revision.h
+)
+CONFIGURE_FILE(
+	${CMAKE_CURRENT_SOURCE_DIR}/assimp/revision.h.in
+	${CMAKE_CURRENT_SOURCE_DIR}/assimp/revision.h
 )
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/assimp/contrib/zlib/zconf.h.included
 	${CMAKE_CURRENT_SOURCE_DIR}/assimp/contrib/zlib/zconf.h
 )
-#add_definitions(-Wno-error)
-#add_subdirectory(assimp/contrib/zlib)
 
-set(LIB_INSTALL_DIR "lib")
+set(ASSIMP_LIB_INSTALL_DIR "lib")
 set(LIBASSIMP_COMPONENT libassimp)
 set(ZLIB_LIBRARIES zlib)
 set(BUILD_STATIC_LIB ON)

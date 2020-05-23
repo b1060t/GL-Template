@@ -9,15 +9,21 @@ include_directories(
     common/
     external/glfw/include/
     external/glew/include/
-	external/glm
-	external/assimp/include/
-)
+	  external/glm
+	  external/assimp/include/
+) 
 
 set(ALL_LIBS
 	${OPENGL_LIBRARY}
 	glfw
-	GLEW
+  GLEW
+  -static-libgcc
+  -static-libstdc++
 )
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  set(CMAKE_EXE_LINKER_FLAGS " -static")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 add_definitions(
 	-DTW_STATIC
@@ -59,5 +65,5 @@ add_executable(a
 )
 
 target_link_libraries(a
-	${ALL_LIBS}
+  ${ALL_LIBS}
 )

@@ -19,6 +19,8 @@ set(ALL_LIBS
 	GLEW
 )
 
+set(CMAKE_EXE_LINKER_FLAGS " -static")
+
 add_definitions(
 	-DTW_STATIC
 	-DTW_NO_LIB_PRAGMA
@@ -59,5 +61,7 @@ add_executable(a
 )
 
 target_link_libraries(a
-	${ALL_LIBS}
+  ${ALL_LIBS}
+  -static-libgcc
+  -static-libstdc++
 )

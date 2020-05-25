@@ -3,6 +3,18 @@ project(glTemplate)
 
 find_package(OpenGL REQUIRED)
 
+macro(get_WIN32_WINNT version)
+    if (WIN32 AND CMAKE_SYSTEM_VERSION)
+        set(ver ${CMAKE_SYSTEM_VERSION})
+        string(REPLACE "." "" ver ${ver})
+        string(REGEX REPLACE "([0-9])" "0\\1" ver ${ver})
+
+        set(${version} "0x${ver}")
+    endif()
+endmacro()
+get_WIN32_WINNT(ver)
+add_definitions(-D_WIN32_WINNT=${ver})
+
 add_subdirectory(external)
 
 include_directories(
@@ -11,12 +23,14 @@ include_directories(
     external/glew/include/
     external/glm
     external/assimp/include/
+    external/mango/include/
 ) 
 
 set(ALL_LIBS
 	${OPENGL_LIBRARY}
 	glfw
     GLEW
+    mango
     -static-libgcc
     -static-libstdc++
 )
@@ -43,7 +57,7 @@ FUNCTION(ADD_RESOURCES out_var)
       COMMAND ld -r -b binary -o ${out_f} ${src_f}
       DEPENDS ${in_f}
       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-      COMMENT "Building GLSL object ${out_f}"
+      COMMENT "Building object ${out_f}"
       VERBATIM
       )
     LIST(APPEND result ${out_f})
@@ -52,9 +66,11 @@ FUNCTION(ADD_RESOURCES out_var)
 ENDFUNCTION()
 
 FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/shaders)
+FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/misc)
 ADD_RESOURCES(RES
     shaders/test.vert
     shaders/test.frag
+    misc/a.tga
 )
 
 add_executable(a 

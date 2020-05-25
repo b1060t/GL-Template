@@ -105,3 +105,11 @@ set(BUILD_STATIC_LIB ON)
 set(ASSIMP_WERROR OFF)
 
 add_subdirectory(assimp/code)
+
+
+ADD_DEFINITIONS(-fpermissive)
+include_directories(
+    mango/include/
+    mango/source/external/libwebp/
+)
+add_subdirectory(mango/build)

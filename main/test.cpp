@@ -16,48 +16,49 @@ GLFWwindow* window;
 #include <glm/gtx/transform.hpp>
 
 //#include <assimp/texture.h>
+#include <mango/mango.hpp>
 
 #include <shader.hpp>
 
 using namespace glm;
 
 static const GLfloat buffer_data[] = {
-     -1.0f,-1.0f,-1.0f, // triangle 1 : begin
-    -1.0f,-1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f, // triangle 1 : end
-    1.0f, 1.0f,-1.0f, // triangle 2 : begin
     -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f,-1.0f, // triangle 2 : end
-    1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f,-1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f,-1.0f,
-    -1.0f, 1.0f,-1.0f,
-    1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f
+	-1.0f,-1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	 1.0f, 1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f,
+	 1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	 1.0f,-1.0f,-1.0f,
+	 1.0f, 1.0f,-1.0f,
+	 1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	 1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	 1.0f,-1.0f, 1.0f,
+	 1.0f, 1.0f, 1.0f,
+	 1.0f,-1.0f,-1.0f,
+	 1.0f, 1.0f,-1.0f,
+	 1.0f,-1.0f,-1.0f,
+	 1.0f, 1.0f, 1.0f,
+	 1.0f,-1.0f, 1.0f,
+	 1.0f, 1.0f, 1.0f,
+	 1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f,
+	 1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	 1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	 1.0f,-1.0f, 1.0f
 };
 static const GLfloat color_data[] = {
     0.583f,  0.771f,  0.014f,
@@ -97,9 +98,48 @@ static const GLfloat color_data[] = {
     0.820f,  0.883f,  0.371f,
     0.982f,  0.099f,  0.879f
 };
+static const GLfloat uv_data[] = {
+    0.000059f, 1.0f-0.000004f,
+    0.000103f, 1.0f-0.336048f,
+    0.335973f, 1.0f-0.335903f,
+    1.000023f, 1.0f-0.000013f,
+    0.667979f, 1.0f-0.335851f,
+    0.999958f, 1.0f-0.336064f,
+    0.667979f, 1.0f-0.335851f,
+    0.336024f, 1.0f-0.671877f,
+    0.667969f, 1.0f-0.671889f,
+    1.000023f, 1.0f-0.000013f,
+    0.668104f, 1.0f-0.000013f,
+    0.667979f, 1.0f-0.335851f,
+    0.000059f, 1.0f-0.000004f,
+    0.335973f, 1.0f-0.335903f,
+    0.336098f, 1.0f-0.000071f,
+    0.667979f, 1.0f-0.335851f,
+    0.335973f, 1.0f-0.335903f,
+    0.336024f, 1.0f-0.671877f,
+    1.000004f, 1.0f-0.671847f,
+    0.999958f, 1.0f-0.336064f,
+    0.667979f, 1.0f-0.335851f,
+    0.668104f, 1.0f-0.000013f,
+    0.335973f, 1.0f-0.335903f,
+    0.667979f, 1.0f-0.335851f,
+    0.335973f, 1.0f-0.335903f,
+    0.668104f, 1.0f-0.000013f,
+    0.336098f, 1.0f-0.000071f,
+    0.000103f, 1.0f-0.336048f,
+    0.000004f, 1.0f-0.671870f,
+    0.336024f, 1.0f-0.671877f,
+    0.000103f, 1.0f-0.336048f,
+    0.336024f, 1.0f-0.671877f,
+    0.335973f, 1.0f-0.335903f,
+    0.667969f, 1.0f-0.671889f,
+    1.000004f, 1.0f-0.671847f,
+    0.667979f, 1.0f-0.335851f
+};
 
 extern const char _binary_shaders_test_vert_start, _binary_shaders_test_vert_end;
 extern const char _binary_shaders_test_frag_start, _binary_shaders_test_frag_end;
+extern const char _binary_misc_a_tga_start, _binary_misc_a_tga_end;
 
 int main( void )
 {
@@ -151,6 +191,10 @@ int main( void )
     glGenBuffers(1, &color);
     glBindBuffer(GL_ARRAY_BUFFER, color);
     glBufferData(GL_ARRAY_BUFFER, sizeof(color_data), color_data, GL_STATIC_DRAW);
+    GLuint uv;
+    glGenBuffers(1, &uv);
+    glBindBuffer(GL_ARRAY_BUFFER, uv);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(uv_data), uv_data, GL_STATIC_DRAW);
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -166,7 +210,8 @@ int main( void )
         glm::vec3(0,0,0), // and looks at the origin
         glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
-    glm::mat4 Model = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, -2.0f, 1.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+    glm::mat4 Model = glm::mat4(1.0f);
+    //glm::mat4 Model = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, -2.0f, 1.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
     glm::mat4 mvp = Projection * View * Model;
     glm::mat4 Projection2 = glm::perspective(glm::radians(45.0f), (float)4/(float)3, 0.1f, 100.0f);
     glm::mat4 View2 = glm::lookAt(
@@ -174,25 +219,49 @@ int main( void )
         glm::vec3(0,0,0), // and looks at the origin
         glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
-    glm::mat4 Model2 = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 2.0f, 1.0f)) * glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f))* glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+    glm::mat4 Model2 = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 2.0f, 1.0f)) * glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))* glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
     glm::mat4 mvp2 = Projection2 * View2 * Model2;
+    float i = 0;
+
+    mango::Bitmap m("a.tga", mango::FORMAT_B8G8R8);
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m.width, m.height, 0, GL_BGR, GL_UNSIGNED_BYTE, m.image);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
 
 	do{
 		// Clear the screen. It's not mentioned before Tutorial 02, but it can cause flickering, so it's there nonetheless.
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Draw nothing, see you in tutorial 2 !
+        i++;
+        Model2 = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 2.0f, 1.0f)) * glm::rotate(glm::mat4(1.0f), glm::radians(i), glm::vec3(1.0f, 1.0f, 0.0f))* glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+        mvp = Projection * View * Model;
+        mvp2 = Projection2 * View2 * Model2;
         glUseProgram(programID);
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glUniform1i(TextureID, 0);
+
         GLuint MatrixID = glGetUniformLocation(programID, "MVP");
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glVertexAttribPointer(
             0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0
         );
-        glEnableVertexAttribArray(1);
+        /*glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, color);
         glVertexAttribPointer(
             1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0
+        );*/
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, uv);
+        glVertexAttribPointer(
+            1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0
         );
         glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
         glDrawArrays(GL_TRIANGLES, 0, 3*12);
@@ -209,7 +278,7 @@ int main( void )
 		   glfwWindowShouldClose(window) == 0 );
 
     glDeleteBuffers(1, &buffer);
-    glDeleteBuffers(1, &color);
+    glDeleteBuffers(1, &uv);
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteProgram(programID);
 

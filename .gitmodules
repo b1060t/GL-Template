@@ -11,3 +11,6 @@
 	path = external/assimp
 	url = https://github.com/assimp/assimp.git
 	branch = assimp_5.0_release
+[submodule "external/mango"]
+	path = external/mango
+	url = https://github.com/t0rakka/mango.git

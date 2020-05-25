@@ -13,6 +13,7 @@ GLFWwindow* window;
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 
 //#include <assimp/texture.h>
 
@@ -165,8 +166,16 @@ int main( void )
         glm::vec3(0,0,0), // and looks at the origin
         glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
-    glm::mat4 Model = glm::mat4(1.0f);
+    glm::mat4 Model = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, -2.0f, 1.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
     glm::mat4 mvp = Projection * View * Model;
+    glm::mat4 Projection2 = glm::perspective(glm::radians(45.0f), (float)4/(float)3, 0.1f, 100.0f);
+    glm::mat4 View2 = glm::lookAt(
+        glm::vec3(4,3,3), // Camera is at (4,3,3), in World Space
+        glm::vec3(0,0,0), // and looks at the origin
+        glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
+    );
+    glm::mat4 Model2 = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 2.0f, 1.0f)) * glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f))* glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+    glm::mat4 mvp2 = Projection2 * View2 * Model2;
 
 	do{
 		// Clear the screen. It's not mentioned before Tutorial 02, but it can cause flickering, so it's there nonetheless.
@@ -175,7 +184,6 @@ int main( void )
 		// Draw nothing, see you in tutorial 2 !
         glUseProgram(programID);
         GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glVertexAttribPointer(
@@ -186,6 +194,9 @@ int main( void )
         glVertexAttribPointer(
             1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0
         );
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+        glDrawArrays(GL_TRIANGLES, 0, 3*12);
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp2[0][0]);
         glDrawArrays(GL_TRIANGLES, 0, 3*12);
         glDisableVertexAttribArray(0);
 		

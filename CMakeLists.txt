@@ -9,16 +9,16 @@ include_directories(
     common/
     external/glfw/include/
     external/glew/include/
-	  external/glm
-	  external/assimp/include/
+    external/glm
+    external/assimp/include/
 ) 
 
 set(ALL_LIBS
 	${OPENGL_LIBRARY}
 	glfw
-  GLEW
-  -static-libgcc
-  -static-libstdc++
+    GLEW
+    -static-libgcc
+    -static-libstdc++
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")

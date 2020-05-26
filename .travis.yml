@@ -2,7 +2,7 @@ language: cpp
 matrix:
   include:
     - os: linux
-      dist: xenial
+      dist: bionic
       addons:
         apt:
           sources:

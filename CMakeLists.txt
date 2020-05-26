@@ -35,6 +35,11 @@ set(ALL_LIBS
     -static-libstdc++
 )
 
+set(CPP_FILES
+    common/shader.cpp
+    common/element.cpp
+)
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set(CMAKE_EXE_LINKER_FLAGS " -static")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
@@ -75,8 +80,7 @@ ADD_RESOURCES(RES
 
 add_executable(a 
     main/test.cpp
-    common/shader.cpp
-    common/shader.hpp
+    ${CPP_FILES}
     ${RES}
 )
 

@@ -1,17 +1,3 @@
-#include <stdio.h>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-#include <sstream>
-using namespace std;
-
-#include <stdlib.h>
-#include <string.h>
-
-#include <GL/glew.h>
-
 #include "shader.hpp"
 
 GLuint LoadShaders(std::string vertex_file,std::string fragment_file)
@@ -173,4 +159,21 @@ GLuint LoadExternalShaders(const char * vertex_file_path,const char * fragment_f
 	glDeleteShader(FragmentShaderID);
 
 	return ProgramID;
+}
+
+Shader::Shader(std::string vertex_file,std::string fragment_file)
+{
+    handle = LoadShaders(vertex_file, fragment_file);
+}
+Shader::Shader(const char * vertex_file_path,const char * fragment_file_path)
+{
+    handle = LoadExternalShaders(vertex_file_path, fragment_file_path);
+}
+void Shader::use()
+{
+    glUseProgram(handle);
+}
+Shader::~Shader()
+{
+    glDeleteProgram(handle);
 }

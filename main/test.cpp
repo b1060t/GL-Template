@@ -21,6 +21,10 @@ GLFWwindow* window;
 #include <shader.hpp>
 #include <element.hpp>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 using namespace glm;
 
 static GLfloat b[] = {
@@ -65,6 +69,7 @@ static GLfloat b[] = {
 extern const char _binary_shaders_test_vert_start, _binary_shaders_test_vert_end;
 extern const char _binary_shaders_test_frag_start, _binary_shaders_test_frag_end;
 extern const char _binary_misc_a_tga_start, _binary_misc_a_tga_end;
+extern const char _binary_misc_a_obj_start, _binary_misc_a_obj_end;
 
 int main( void )
 {
@@ -129,7 +134,14 @@ int main( void )
         glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
 
-    Element e(b, sizeof(b), v, &m, &test_shader);
+    Element e(b, sizeof(b), v, &m);
+    e.attachShader(&test_shader);
+
+    Assimp::Importer importer;
+    //const aiScene* sceneObjPtr = importer.ReadFile("a.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* sceneObjPtr = importer.ReadFileFromMemory((void*)(&_binary_misc_a_obj_start), (&_binary_misc_a_obj_end-&_binary_misc_a_obj_start)*sizeof(char),aiProcess_ValidateDataStructure);
+    const aiNode* node = sceneObjPtr->mRootNode;
+    printf("%s", node->mChildren[0]->mName.C_Str());
 
 	do{
 		// Clear the screen. It's not mentioned before Tutorial 02, but it can cause flickering, so it's there nonetheless.

@@ -1,15 +1,7 @@
 #ifndef ELEMENT_HPP
 #define ELEMENT_HPP
 
-#include <shader.hpp>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-#include <vector>
-#include <mango/mango.hpp>
-
+#include <common.hpp>
 
 struct Attr
 {
@@ -20,6 +12,17 @@ struct Attr
     GLsizei offset;
 };
 
+struct Vertex
+{
+    glm::vec3 pos;
+    glm::vec3 tex;
+    glm::vec3 norm;
+};
+
+struct Texture
+{
+    GLuint id;
+};
 
 class Element
 {
@@ -33,8 +36,7 @@ private:
     std::vector<Attr> _attr;
     GLuint _mvp_id;
     GLuint _texture_id;
-    GLuint _texture;
-    mango::Bitmap* _bitmap;
+    Texture _texture;
 
     GLint _vert_num;
     GLint _attr_num;
@@ -46,9 +48,11 @@ private:
     glm::mat4 _model;
 
 public:
-    Element(GLfloat* data, GLsizei size, std::vector<Attr> attr, mango::Bitmap* bitmap, Shader* shader);
+    Element(GLfloat* data, GLsizei size, std::vector<Attr> attr, mango::Bitmap* bitmap);
+    Element(GLfloat* data, GLsizei size, std::vector<Attr> attr, Texture texture);
     ~Element();
     void initialzeVAO();
+    void attachShader(Shader* shader);
     void render(glm::mat4 View, glm::mat4 Projection);
 };
 

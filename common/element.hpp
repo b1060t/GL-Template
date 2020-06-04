@@ -12,12 +12,6 @@ struct Attr
     GLsizei offset;
 };
 
-struct Vertex
-{
-    glm::vec3 pos;
-    glm::vec3 tex;
-    glm::vec3 norm;
-};
 
 struct Texture
 {
@@ -31,8 +25,9 @@ private:
     GLuint _buffer_handle;
     GLfloat* _buffer;
     GLsizei _buffer_size;
+    GLsizei _indices_size;
     GLuint _vao;
-    GLuint _vbo;
+    GLuint _ibo;
     std::vector<Attr> _attr;
     GLuint _mvp_id;
     GLuint _texture_id;
@@ -48,8 +43,8 @@ private:
     glm::mat4 _model;
 
 public:
-    Element(GLfloat* data, GLsizei size, std::vector<Attr> attr, mango::Bitmap* bitmap);
-    Element(GLfloat* data, GLsizei size, std::vector<Attr> attr, Texture texture);
+    Element(GLfloat* data, GLint* indices, GLsizei buffer_size, GLsizei indices_size, std::vector<Attr> attr, mango::Bitmap* bitmap);
+    Element(GLfloat* data, GLint* indices, GLsizei buffer_size, GLsizei indices_size, std::vector<Attr> attr, Texture texture);
     ~Element();
     void initialzeVAO();
     void attachShader(Shader* shader);

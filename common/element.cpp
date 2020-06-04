@@ -1,14 +1,19 @@
 #include <element.hpp>
 
-Element::Element(GLfloat* data, GLsizei size, std::vector<Attr> attr, mango::Bitmap* bitmap)
+Element::Element(GLfloat* data, GLint* indices, GLsizei buffer_size, GLsizei indices_size, std::vector<Attr> attr, mango::Bitmap* bitmap)
 {
     _buffer = data;
-    _buffer_size = size;
+    _buffer_size = buffer_size;
+    _indices_size = indices_size;
     _attr = attr;
     
     glGenBuffers(1, &_buffer_handle);
     glBindBuffer(GL_ARRAY_BUFFER, _buffer_handle);
     glBufferData(GL_ARRAY_BUFFER, _buffer_size, _buffer, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &_ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices_size, indices, GL_STATIC_DRAW);
 
     glGenTextures(1, &_texture.id);
     glBindTexture(GL_TEXTURE_2D, _texture.id);
@@ -20,16 +25,21 @@ Element::Element(GLfloat* data, GLsizei size, std::vector<Attr> attr, mango::Bit
     initialzeVAO();
 }
 
-Element::Element(GLfloat* data, GLsizei size, std::vector<Attr> attr, Texture texture)
+Element::Element(GLfloat* data, GLint* indices, GLsizei buffer_size, GLsizei indices_size, std::vector<Attr> attr, Texture texture)
 {
     _buffer = data;
-    _buffer_size = size;
+    _buffer_size = buffer_size;
+    _indices_size = indices_size;
     _attr = attr;
     _texture = texture;
 
     glGenBuffers(1, &_buffer_handle);
     glBindBuffer(GL_ARRAY_BUFFER, _buffer_handle);
     glBufferData(GL_ARRAY_BUFFER, _buffer_size, _buffer, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &_ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices_size, indices, GL_STATIC_DRAW);
 
     glGenVertexArrays(1, &_vao);
     initialzeVAO();
@@ -38,6 +48,7 @@ Element::Element(GLfloat* data, GLsizei size, std::vector<Attr> attr, Texture te
 Element::~Element()
 {
     glDeleteBuffers(1, &_buffer_handle);
+    glDeleteBuffers(1, &_ibo);
     glDeleteVertexArrays(1, &_vao);
 }
 
@@ -60,6 +71,7 @@ void Element::initialzeVAO()
         );
         _attr_num += a.size;
     }
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
     _vert_num = _buffer_size / (_attr_num * sizeof(_buffer[0]));
 }
 
@@ -79,5 +91,6 @@ void Element::render(glm::mat4 View, glm::mat4 Projection)
 
     glm::mat4 mvp = Projection * View * _model;
     glUniformMatrix4fv(_mvp_id, 1, GL_FALSE, &mvp[0][0]);
-    glDrawArrays(GL_TRIANGLES, 0, _vert_num);
+    glDrawElements(GL_TRIANGLES, _indices_size/sizeof(int), GL_UNSIGNED_INT, 0);
+    //glDrawArrays(GL_TRIANGLES, 0, _vert_num);
 }

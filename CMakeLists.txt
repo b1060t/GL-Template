@@ -78,6 +78,7 @@ ADD_RESOURCES(RES
     shaders/test.frag
     misc/a.tga
     misc/a.obj
+    misc/a.jpg
 )
 
 find_package(Threads)

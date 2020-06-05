@@ -76,9 +76,10 @@ FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/misc)
 ADD_RESOURCES(RES
     shaders/test.vert
     shaders/test.frag
-    misc/a.tga
     misc/a.obj
-    misc/a.jpg
+    misc/diffuse.jpg
+    misc/specular.jpg
+    misc/normal.png
 )
 
 find_package(Threads)

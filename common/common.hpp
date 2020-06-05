@@ -9,5 +9,8 @@
 #include <glm/gtx/transform.hpp>
 #include <vector>
 #include <mango/mango.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #endif

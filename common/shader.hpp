@@ -24,6 +24,22 @@ public:
     Shader(const char * vertex_file_path,const char * fragment_file_path);
     ~Shader();
     void use();
+    void setBool(const std::string &name, bool value) const
+    {         
+        glUniform1i(glGetUniformLocation(handle, name.c_str()), (int)value); 
+    }
+    void setInt(const std::string &name, int value) const
+    { 
+        glUniform1i(glGetUniformLocation(handle, name.c_str()), value); 
+    }
+    void setFloat(const std::string &name, float value) const
+    { 
+        glUniform1f(glGetUniformLocation(handle, name.c_str()), value); 
+    }
+    void setMat4(const std::string &name, GLsizei count, GLboolean transpose, GLfloat* value) const
+    { 
+        glUniformMatrix4fv(glGetUniformLocation(handle, name.c_str()), count, transpose, value); 
+    } 
 };
 
 #endif

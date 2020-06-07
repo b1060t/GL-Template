@@ -20,6 +20,7 @@ GLFWwindow* window;
 
 #include <shader.hpp>
 #include <element.hpp>
+#include <camera.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -113,12 +114,6 @@ int main( void )
         std::string(&_binary_shaders_test_frag_start, &_binary_shaders_test_frag_end - &_binary_shaders_test_frag_start)
     );
 
-    glm::mat4 Projection = glm::perspective(glm::radians(90.0f), (float)4/(float)3, 0.01f, 100.0f);
-    glm::mat4 View = glm::lookAt(
-        glm::vec3(0,0,4),
-        glm::vec3(0,0,0),
-        glm::vec3(0,1,0)
-    );
 
     Assimp::Importer importer;
     //const aiScene* sceneObjPtr = importer.ReadFile("a.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -135,12 +130,15 @@ int main( void )
 		objs.push_back(e);
 	}
 
+	Camera cam(window, 1024, 768, 45.0f, glm::vec3(0,0,1));
+
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		cam.loop();
 		for (auto a : objs)
 		{
-			a->render(View, Projection);
+			a->render(cam.view, cam.projection);
 		}
         //objs[1]->render(View, Projection);
 		

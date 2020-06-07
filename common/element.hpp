@@ -50,6 +50,7 @@ namespace tide
     
         Element(GLfloat* data, GLint* indices, GLsizei buffer_size, GLsizei indices_size, std::vector<Attr> attr);
         Element(const aiMesh* mesh, std::vector<Attr> attr);
+        Element(const aiScene* meshs, std::vector<Attr> attr);
         ~Element();
     
         void addVec3Uniform(const std::string &name, glm::vec3 value);

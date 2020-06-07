@@ -50,16 +50,16 @@ namespace tide
 		}
 		void keyboardEvent(float delta)
 		{
-			if (glfwGetKey(_window, GLFW_KEY_UP ) == GLFW_PRESS){
+			if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS){
 				_pos += _forward * delta * _keyboard_speed;
 			}
-			if (glfwGetKey(_window, GLFW_KEY_DOWN ) == GLFW_PRESS){
+			if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS){
 				_pos -= _forward * delta * _keyboard_speed;
 			}
-			if (glfwGetKey(_window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
+			if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS){
 				_pos += _right * delta * _keyboard_speed;
 			}
-			if (glfwGetKey(_window, GLFW_KEY_LEFT ) == GLFW_PRESS){
+			if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS){
 				_pos -= _right * delta * _keyboard_speed;
 			}
 		}

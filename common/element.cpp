@@ -69,14 +69,67 @@ namespace tide
         glGenVertexArrays(1, &_vao);
         initialzeVAO();
     }
+
+    Element::Element(const aiScene* meshs, std::vector<Attr> attr)
+    {
+        std::vector<GLfloat> vertices;
+        std::vector<int> indices;
+
+        int num = meshs->mNumMeshes;
+        const aiVector3D aiZeroVector(0.0f, 0.0f, 0.0f);
+        int count = 0;
+        for (int j=0; j < num; j++)
+        {
+            const aiMesh* mesh = meshs->mMeshes[j];
+            for(unsigned int i = 0; i < mesh->mNumVertices; i++)
+            {
+            	const aiVector3D* pPos = &(mesh->mVertices[i]);
+            	const aiVector3D* pNormal = &(mesh->mNormals[i]);
+            	const aiVector3D* pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][i]) : &aiZeroVector;
+
+            	vertices.push_back(pPos->x);
+            	vertices.push_back(pPos->y);
+            	vertices.push_back(pPos->z);
+            	vertices.push_back(pTexCoord->x);
+            	vertices.push_back(pTexCoord->y);
+                vertices.push_back(pNormal->x);
+            	vertices.push_back(pNormal->y);
+            	vertices.push_back(pNormal->z);
+            }
+            for(unsigned int i = 0; i < mesh->mNumFaces; i++)
+            {
+                const aiFace& face = mesh->mFaces[i];
+                assert(face.mNumIndices == 3);
+                indices.push_back(face.mIndices[0]+count);
+                indices.push_back(face.mIndices[1]+count);
+                indices.push_back(face.mIndices[2]+count);
+            }
+            count+=mesh->mNumVertices;
+        }
+
+        _buffer = &vertices[0];
+        _indices = &indices[0];
+        _buffer_size = vertices.size()*sizeof(GLfloat);
+        _indices_size = indices.size()*sizeof(int);
+        _attr = attr;
+
+        glGenBuffers(1, &_buffer_handle);
+        glBindBuffer(GL_ARRAY_BUFFER, _buffer_handle);
+        glBufferData(GL_ARRAY_BUFFER, _buffer_size, _buffer, GL_STATIC_DRAW);
+
+        glGenBuffers(1, &_ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices_size, _indices, GL_STATIC_DRAW);
+
+        glGenVertexArrays(1, &_vao);
+        initialzeVAO();
+    }
     
     Element::~Element()
     {
         glDeleteBuffers(1, &_buffer_handle);
         glDeleteBuffers(1, &_ibo);
         glDeleteVertexArrays(1, &_vao);
-        if (_buffer != nullptr) delete _buffer; _buffer = nullptr;
-        if (_indices != nullptr) delete _indices; _indices = nullptr;
     }
     
     void Element::attachShader(Shader* shader)

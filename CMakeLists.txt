@@ -76,6 +76,8 @@ FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/misc)
 ADD_RESOURCES(RES
     shaders/test.vert
     shaders/test.frag
+    shaders/shade.vert
+    shaders/shade.frag
     misc/a.obj
     misc/diffuse.jpg
     misc/specular.jpg

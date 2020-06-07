@@ -13,6 +13,7 @@ out vec3 Normal;
 
 void main()
 {
+    mat4 MVP = Projection * View * Model;
     gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
     UV = vertexUV;
     Normal = vertexNorm;

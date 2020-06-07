@@ -29,9 +29,12 @@ GLFWwindow* window;
 #include <vector>
 
 using namespace glm;
+using namespace tide;
 
 extern const char _binary_shaders_test_vert_start, _binary_shaders_test_vert_end;
 extern const char _binary_shaders_test_frag_start, _binary_shaders_test_frag_end;
+extern const char _binary_shaders_shade_vert_start, _binary_shaders_shade_vert_end;
+extern const char _binary_shaders_shade_frag_start, _binary_shaders_shade_frag_end;
 extern const char _binary_misc_diffuse_jpg_start, _binary_misc_diffuse_jpg_end;
 extern const char _binary_misc_specular_jpg_start, _binary_misc_specular_jpg_end;
 extern const char _binary_misc_normal_png_start, _binary_misc_normal_png_end;
@@ -114,6 +117,11 @@ int main( void )
         std::string(&_binary_shaders_test_frag_start, &_binary_shaders_test_frag_end - &_binary_shaders_test_frag_start)
     );
 
+	Shader shade_shader(
+        std::string(&_binary_shaders_shade_vert_start, &_binary_shaders_shade_vert_end - &_binary_shaders_shade_vert_start),
+        std::string(&_binary_shaders_shade_frag_start, &_binary_shaders_shade_frag_end - &_binary_shaders_shade_frag_start)
+    );
+
 
     Assimp::Importer importer;
     //const aiScene* sceneObjPtr = importer.ReadFile("a.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -123,14 +131,19 @@ int main( void )
 	for (int j=0; j < num; j++)
 	{
 		const aiMesh* mesh = sceneObjPtr->mMeshes[j];
-		Element* e = new Element(mesh, v, diffuse);
-    	e->attachShader(&test_shader);
-        e->addTexture(TextureType::Specular, specular);
-        e->addTexture(TextureType::Normal, normal);
+		Element* e = new Element(mesh, v);
+    	e->attachShader(&shade_shader);
+		e->addTexture("diffuseTex", diffuse);
+        e->addTexture("specularTex", specular);
+        e->addTexture("normalTex", normal);
+		e->addMat4Uniform("Model", glm::mat4(1.0f));
+		e->addMat4Uniform("View", glm::mat4(1.0f));
+		e->addMat4Uniform("Projection", glm::mat4(1.0f));
 		objs.push_back(e);
 	}
 
 	Camera cam(window, 1024, 768, 45.0f, glm::vec3(0,0,1));
+	glm::mat4 model = glm::mat4(1.0f);
 
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -138,7 +151,9 @@ int main( void )
 		cam.loop();
 		for (auto a : objs)
 		{
-			a->render(cam.view, cam.projection);
+			a->mat4dic["View"]=cam.view;
+			a->mat4dic["Projection"]=cam.projection;
+			a->render();
 		}
         //objs[1]->render(View, Projection);
 		

@@ -31,14 +31,17 @@ GLFWwindow* window;
 using namespace glm;
 using namespace tide;
 
-extern const char _binary_shaders_test_vert_start, _binary_shaders_test_vert_end;
-extern const char _binary_shaders_test_frag_start, _binary_shaders_test_frag_end;
+//extern const char _binary_shaders_test_vert_start, _binary_shaders_test_vert_end;
+//extern const char _binary_shaders_test_frag_start, _binary_shaders_test_frag_end;
 extern const char _binary_shaders_shade_vert_start, _binary_shaders_shade_vert_end;
 extern const char _binary_shaders_shade_frag_start, _binary_shaders_shade_frag_end;
 extern const char _binary_misc_diffuse_jpg_start, _binary_misc_diffuse_jpg_end;
 extern const char _binary_misc_specular_jpg_start, _binary_misc_specular_jpg_end;
 extern const char _binary_misc_normal_png_start, _binary_misc_normal_png_end;
 extern const char _binary_misc_a_obj_start, _binary_misc_a_obj_end;
+
+#define WIDTH 1024
+#define HEIGHT 768
 
 int main( void )
 {
@@ -57,7 +60,7 @@ int main( void )
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow( 1024, 768, "Test", NULL, NULL);
+	window = glfwCreateWindow(WIDTH, HEIGHT, "Test", NULL, NULL);
 	if( window == NULL ){
 		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
 		getchar();
@@ -112,10 +115,10 @@ int main( void )
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     
-	Shader test_shader(
-	    std::string(&_binary_shaders_test_vert_start, &_binary_shaders_test_vert_end - &_binary_shaders_test_vert_start),
-	    std::string(&_binary_shaders_test_frag_start, &_binary_shaders_test_frag_end - &_binary_shaders_test_frag_start)
-	);
+	//Shader test_shader(
+	//    std::string(&_binary_shaders_test_vert_start, &_binary_shaders_test_vert_end - &_binary_shaders_test_vert_start),
+	//    std::string(&_binary_shaders_test_frag_start, &_binary_shaders_test_frag_end - &_binary_shaders_test_frag_start)
+	//);
 
 	Shader shade_shader(
 	    std::string(&_binary_shaders_shade_vert_start, &_binary_shaders_shade_vert_end - &_binary_shaders_shade_vert_start),
@@ -128,24 +131,40 @@ int main( void )
 	const aiScene* sceneObjPtr = importer.ReadFileFromMemory((void*)(&_binary_misc_a_obj_start), (&_binary_misc_a_obj_end-&_binary_misc_a_obj_start)*sizeof(char),aiProcess_ValidateDataStructure);
 	Element e(sceneObjPtr, v);
 	e.attachShader(&shade_shader);
-	e.addTexture("diffuseTex", diffuse);
-	e.addTexture("specularTex", specular);
-	e.addTexture("normalTex", normal);
-	e.addMat4Uniform("Model", glm::mat4(1.0f));
+	e.addTexture("material.diffuse", diffuse);
+	e.addTexture("material.specular", specular);
+	e.addTexture("material.normal", normal);
+	e.addFloatUniform("material.shiness", 32.0f);
+	e.addVec3Uniform("light.pos", glm::vec3(1.0f,0.0f,0.0f));
+	e.addVec3Uniform("light.diffuse", glm::vec3(0.7f));
+	e.addVec3Uniform("light.ambient", glm::vec3(0.2f));
+	e.addVec3Uniform("light.specular", glm::vec3(1.0f));
+	//e.addMat4Uniform("Model", glm::mat4(1.0f));
 	e.addMat4Uniform("View", glm::mat4(1.0f));
 	e.addMat4Uniform("Projection", glm::mat4(1.0f));
-	e.addVec3Uniform("lightDir", glm::vec3(-1.0f,-2.0f,-3.0f));
+	e.addVec3Uniform("viewPos", glm::vec3(0.0f));
 
-	Camera cam(window, 1024, 768, 45.0f, glm::vec3(0,0,1));
-	glm::mat4 model = glm::mat4(1.0f);
+    e.internal_model = true;
+    e.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
+    e.setScale(glm::vec3(0.8f));
+    e.setRotation(glm::vec3(0.0f,0.0f,0.0f));
+
+	Camera cam(window, WIDTH, HEIGHT, 45.0f, glm::vec3(0,0,4));
+    glfwSetCursorPos(window, WIDTH/2, HEIGHT/2);
+
 
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		cam.loop();
 
+		float x = 1.0f * sin(glfwGetTime());
+		float z = 1.0f * cos(glfwGetTime());
+
+		e.vec3dic["light.pos"]=glm::vec3(x,0.0f,z);
 		e.mat4dic["View"]=cam.view;
 		e.mat4dic["Projection"]=cam.projection;
+		e.vec3dic["viewPos"]=cam.getPos();
 		e.render();
 		
 		glfwSwapBuffers(window);

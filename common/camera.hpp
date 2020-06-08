@@ -5,96 +5,82 @@
 
 namespace tide
 {
-	#define MAX_PITCH_ANGLE 3.14f/4.0f
-	#define MIN_PITCH_ANGLE -3.14f/4.0f
-	#define MAX_YAW_ANGLE 3.14f
-	#define MIN_YAW_ANGLE 0.0f
-	
 	class Camera
 	{
 	private:
-	
+
 		double _width;
 		double _height;
 		GLFWwindow* _window;
-	
+
 		GLfloat _fov;
 		glm::vec3 _pos;
-	
+        glm::quat _ori;
+
 		GLboolean _firstRun;
 		GLfloat _mouse_speed;
 		GLfloat _keyboard_speed;
-	
+
 		GLfloat _pitch;
 		GLfloat _yaw;
-	
-		glm::vec3 _forward;
-		glm::vec3 _right;
-		glm::vec3 _up;
-	
+
+        double _prex;
+        double _prey;
+
 		double _last_time;
 	
 		void mouseEvent()
 		{
 			double xpos, ypos;
 			glfwGetCursorPos(_window, &xpos, &ypos);
-			glfwSetCursorPos(_window, _width/2, _height/2);
-			_pitch += _mouse_speed * float(_height/2 - ypos);
-			_yaw += _mouse_speed * float(_width/2 - xpos);
-			if (_pitch > MAX_PITCH_ANGLE)
-	    	    _pitch = MAX_PITCH_ANGLE;
-	    	if (_pitch < MIN_PITCH_ANGLE)
-	    	    _pitch = MIN_PITCH_ANGLE;
-	    	if (_yaw < MIN_YAW_ANGLE)
-	    	    _yaw += 3.14f;
+			_pitch += _mouse_speed * float(_prey - ypos);
+			_yaw += _mouse_speed * float(_prex - xpos);
+            _prey = ypos;
+            _prex = xpos;
 		}
 		void keyboardEvent(float delta)
 		{
+            glm::quat f = _ori * glm::quat(0, 0, 0, -1) * glm::conjugate(_ori);
+            glm::vec3 forward = glm::vec3(f.x, f.y, f.z);
+            glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
 			if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS){
-				_pos += _forward * delta * _keyboard_speed;
+				_pos += forward * delta * _keyboard_speed;
 			}
 			if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS){
-				_pos -= _forward * delta * _keyboard_speed;
+				_pos -= forward * delta * _keyboard_speed;
 			}
 			if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS){
-				_pos += _right * delta * _keyboard_speed;
+				_pos += right * delta * _keyboard_speed;
 			}
 			if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS){
-				_pos -= _right * delta * _keyboard_speed;
+				_pos -= right * delta * _keyboard_speed;
 			}
 		}
 		void updateVector()
 		{
-			_forward.x = sin(_yaw) * cos(_pitch);
-			_forward.y = sin(_pitch);
-			_forward.z = cos(_yaw) * cos(_pitch);
-			_forward = glm::normalize(_forward);
-	
-			_right.x = sin(_yaw - 3.14f/2.0f);
-			_right.y = 0;
-			_right.z = cos(_yaw - 3.14f/2.0f);
-			_right = glm::normalize(_right);
-	
-			_up = glm::cross(_right, _forward);
+            glm::quat qPitch = glm::angleAxis(_pitch, glm::vec3(1, 0, 0));
+            glm::quat qYaw = glm::angleAxis(_yaw, glm::vec3(0, 1, 0));
+            _ori = glm::normalize(qYaw * qPitch);
 		}
+
 	public:
-	
+
 		glm::mat4 view;
 		glm::mat4 projection;
-	
-		Camera(GLFWwindow* window, double width, double height, GLfloat fov=45.0f, glm::vec3 pos=glm::vec3(0,0,1), GLfloat mouseSpeed=0.01f, GLfloat keyboardSpeed=1.0f)
+
+		Camera(GLFWwindow* window, double width, double height, GLfloat fov=45.0f, glm::vec3 pos=glm::vec3(0,0,1), GLfloat mouseSpeed=0.01f, GLfloat keyboardSpeed=1.0f, GLfloat yaw_rad=0.0f, GLfloat pitch_rad=0.0f)
 			:_fov(fov),
 			_pos(pos),
 			_window(window),
 			_width(width),
 			_height(height),
-			_yaw(3.14f),
-			_pitch(0),
+			_yaw(yaw_rad),
+			_pitch(pitch_rad),
 			_mouse_speed(mouseSpeed),
 			_keyboard_speed(keyboardSpeed)
 		{
 			_firstRun = true;
-			
+			projection = glm::perspective(glm::radians(_fov), float(_width/_height), 0.1f, 100.0f);
 		}
 		~Camera()
 		{
@@ -106,21 +92,23 @@ namespace tide
 			{
 				_firstRun = false;
 				_last_time = glfwGetTime();
+			    glfwGetCursorPos(_window, &_prex, &_prey);
 			}
 			double cur_time = glfwGetTime();
 			float delta = float(cur_time - _last_time);
 			mouseEvent();
 			updateVector();
 			keyboardEvent(delta);
-			projection = glm::perspective(glm::radians(_fov), float(_width/_height), 0.1f, 100.0f);
-			view = glm::lookAt(
-				_pos,
-				_pos+_forward,
-				_up
-			);
+
+            glm::mat4 translate = glm::translate(glm::mat4(1.0f), -_pos);
+            view = glm::mat4_cast(glm::conjugate(_ori)) * translate;
+
 			_last_time = cur_time;
 		}
-		
+		glm::vec3 getPos()
+		{
+			return _pos;
+		}
 	};
 }
 

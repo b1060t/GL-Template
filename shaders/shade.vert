@@ -10,6 +10,7 @@ uniform mat4 Projection;
 
 out vec2 UV;
 out vec3 Normal;
+out vec3 Pos;
 
 void main()
 {
@@ -17,4 +18,5 @@ void main()
     gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
     UV = vertexUV;
     Normal = vertexNorm;
+    Pos = vertexPosition_modelspace;
 }

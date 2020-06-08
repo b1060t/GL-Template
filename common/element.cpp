@@ -177,6 +177,20 @@ namespace tide
         {
             _shader->setVec3(v.first, 1, &v.second[0]);
         }
+        for(auto v : floatdic)
+        {
+            _shader->setFloat(v.first, v.second);
+        }
+
+        if(internal_model)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            glm::qua<float> q(glm::radians(_rot));
+            model = glm::scale(glm::mat4(1.0f), _scale) * model;
+            model = glm::mat4_cast(q) * model;
+            model = glm::translate(glm::mat4(1.0f), _pos) * model;
+            _shader->setMat4("Model", 1, GL_FALSE, &model[0][0]);
+        }
     
         glBindVertexArray(_vao);
         glDrawElements(GL_TRIANGLES, _indices_size/sizeof(int), GL_UNSIGNED_INT, 0);
@@ -207,5 +221,23 @@ namespace tide
     void Element::addMat4Uniform(const std::string &name, glm::mat4 value)
     {
         mat4dic.insert(std::pair<std::string, glm::mat4>(name, value));
+    }
+
+    void Element::addFloatUniform(const std::string &name, GLfloat value)
+    {
+        floatdic.insert(std::pair<std::string, GLfloat>(name, value));
+    }
+
+    void Element::setPosition(glm::vec3 pos)
+    {
+        _pos = pos;
+    }
+    void Element::setRotation(glm::vec3 rot)
+    {
+        _rot = rot;
+    }
+    void Element::setScale(glm::vec3 scale)
+    {
+        _scale = scale;
     }
 }

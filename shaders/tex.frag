@@ -4,7 +4,7 @@ in vec2 texPos;
 
 out vec4 fragColor;
 
-uniform sampler2D texture;
+uniform sampler2D tex;
 
 const float offset = 1.0 / 300.0;
 vec2 offsets[9] = vec2[](
@@ -29,7 +29,7 @@ void main()
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++)
     {
-        sampleTex[i] = vec3(texture(texture, texPos.xy + offsets[i]));
+        sampleTex[i] = vec3(texture(tex, texPos.xy + offsets[i]));
     }
     vec3 col = vec3(0.0);
     for(int i = 0; i < 9; i++) col += sampleTex[i] * kernel[i];

@@ -1,4 +1,17 @@
-#include "shader.hpp"
+#ifndef SHADER_HPP
+#define SHADER_HPP
+
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <sstream>
+#include <stdlib.h>
+#include <string.h>
+
+#include <GL/glew.h>
 
 GLuint LoadShaders(std::string vertex_file,std::string fragment_file)
 {
@@ -67,9 +80,9 @@ GLuint LoadShaders(std::string vertex_file,std::string fragment_file)
 
 	return ProgramID;
 }
-GLuint LoadExternalShaders(const char * vertex_file_path,const char * fragment_file_path){
-
-	// Create the shaders
+GLuint LoadExternalShaders(const char * vertex_file_path,const char * fragment_file_path)
+{
+    // Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -161,19 +174,46 @@ GLuint LoadExternalShaders(const char * vertex_file_path,const char * fragment_f
 	return ProgramID;
 }
 
-Shader::Shader(std::string vertex_file,std::string fragment_file)
+class Shader
 {
-    handle = LoadShaders(vertex_file, fragment_file);
-}
-Shader::Shader(const char * vertex_file_path,const char * fragment_file_path)
-{
-    handle = LoadExternalShaders(vertex_file_path, fragment_file_path);
-}
-void Shader::use()
-{
-    glUseProgram(handle);
-}
-Shader::~Shader()
-{
-    glDeleteProgram(handle);
-}
+public:
+    GLuint handle;
+    Shader(std::string vertex_file,std::string fragment_file)
+    {
+        handle = LoadShaders(vertex_file, fragment_file);
+    }
+    Shader(const char * vertex_file_path,const char * fragment_file_path)
+    {
+        handle = LoadExternalShaders(vertex_file_path, fragment_file_path);
+    }
+    ~Shader()
+    {
+        glDeleteProgram(handle);
+    }
+    void use()
+    {
+        glUseProgram(handle);
+    }
+    void setBool(const std::string &name, bool value) const
+    {         
+        glUniform1i(glGetUniformLocation(handle, name.c_str()), (int)value); 
+    }
+    void setInt(const std::string &name, int value) const
+    { 
+        glUniform1i(glGetUniformLocation(handle, name.c_str()), value); 
+    }
+    void setFloat(const std::string &name, float value) const
+    { 
+        glUniform1f(glGetUniformLocation(handle, name.c_str()), value); 
+    }
+    void setMat4(const std::string &name, GLsizei count, GLboolean transpose, GLfloat* value) const
+    { 
+        glUniformMatrix4fv(glGetUniformLocation(handle, name.c_str()), count, transpose, value); 
+    }
+    void setVec3(const std::string &name, GLsizei count, GLfloat* value) const
+    { 
+        glUniform3fv(glGetUniformLocation(handle, name.c_str()), count, value);
+    }
+};
+
+#endif

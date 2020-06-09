@@ -31,10 +31,9 @@ GLFWwindow* window;
 using namespace glm;
 using namespace tide;
 
-//extern const char _binary_shaders_test_vert_start, _binary_shaders_test_vert_end;
-//extern const char _binary_shaders_test_frag_start, _binary_shaders_test_frag_end;
 extern const char _binary_shaders_shade_vert_start, _binary_shaders_shade_vert_end;
 extern const char _binary_shaders_shade_frag_start, _binary_shaders_shade_frag_end;
+extern const char _binary_shaders_outline_frag_start, _binary_shaders_outline_frag_end;
 extern const char _binary_misc_diffuse_jpg_start, _binary_misc_diffuse_jpg_end;
 extern const char _binary_misc_specular_jpg_start, _binary_misc_specular_jpg_end;
 extern const char _binary_misc_normal_png_start, _binary_misc_normal_png_end;
@@ -125,6 +124,11 @@ int main( void )
 	    std::string(&_binary_shaders_shade_frag_start, &_binary_shaders_shade_frag_end - &_binary_shaders_shade_frag_start)
 	);
 
+    Shader outline_shader(
+        std::string(&_binary_shaders_shade_vert_start, &_binary_shaders_shade_vert_end - &_binary_shaders_shade_vert_start),
+	    std::string(&_binary_shaders_outline_frag_start, &_binary_shaders_outline_frag_end - &_binary_shaders_outline_frag_start)
+    );
+
 
 	Assimp::Importer importer;
 	//const aiScene* sceneObjPtr = importer.ReadFile("a.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -139,33 +143,70 @@ int main( void )
 	e.addVec3Uniform("light.diffuse", glm::vec3(0.7f));
 	e.addVec3Uniform("light.ambient", glm::vec3(0.2f));
 	e.addVec3Uniform("light.specular", glm::vec3(1.0f));
-	//e.addMat4Uniform("Model", glm::mat4(1.0f));
 	e.addMat4Uniform("View", glm::mat4(1.0f));
 	e.addMat4Uniform("Projection", glm::mat4(1.0f));
 	e.addVec3Uniform("viewPos", glm::vec3(0.0f));
+
+    Element o(sceneObjPtr, v);
+	o.attachShader(&outline_shader);
+	o.addTexture("material.diffuse", diffuse);
+	o.addTexture("material.specular", specular);
+	o.addTexture("material.normal", normal);
+	o.addFloatUniform("material.shiness", 32.0f);
+	o.addVec3Uniform("light.pos", glm::vec3(1.0f,0.0f,0.0f));
+	o.addVec3Uniform("light.diffuse", glm::vec3(0.7f));
+	o.addVec3Uniform("light.ambient", glm::vec3(0.2f));
+	o.addVec3Uniform("light.specular", glm::vec3(1.0f));
+	o.addMat4Uniform("View", glm::mat4(1.0f));
+	o.addMat4Uniform("Projection", glm::mat4(1.0f));
+	o.addVec3Uniform("viewPos", glm::vec3(0.0f));
 
     e.internal_model = true;
     e.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
     e.setScale(glm::vec3(0.8f));
     e.setRotation(glm::vec3(0.0f,0.0f,0.0f));
 
+    o.internal_model = true;
+    o.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
+    o.setScale(glm::vec3(0.82f));
+    o.setRotation(glm::vec3(0.0f,0.0f,0.0f));
+
 	Camera cam(window, WIDTH, HEIGHT, 45.0f, glm::vec3(0,0,4));
     glfwSetCursorPos(window, WIDTH/2, HEIGHT/2);
 
+    glEnable(GL_STENCIL_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	do{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		cam.loop();
 
 		float x = 1.0f * sin(glfwGetTime());
 		float z = 1.0f * cos(glfwGetTime());
 
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
+
 		e.vec3dic["light.pos"]=glm::vec3(x,0.0f,z);
 		e.mat4dic["View"]=cam.view;
 		e.mat4dic["Projection"]=cam.projection;
 		e.vec3dic["viewPos"]=cam.getPos();
 		e.render();
+
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
+
+        o.vec3dic["light.pos"]=glm::vec3(x,0.0f,z);
+		o.mat4dic["View"]=cam.view;
+		o.mat4dic["Projection"]=cam.projection;
+		o.vec3dic["viewPos"]=cam.getPos();
+		o.render();
+
+        glStencilMask(0xFF);
+        glEnable(GL_DEPTH_TEST);
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();

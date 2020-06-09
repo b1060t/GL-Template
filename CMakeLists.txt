@@ -18,7 +18,7 @@ add_definitions(-D_WIN32_WINNT=${ver})
 add_subdirectory(external)
 
 include_directories(
-    common/
+    tide/
     external/glfw/include/
     external/glew/include/
     external/glm
@@ -37,8 +37,7 @@ set(ALL_LIBS
 )
 
 set(CPP_FILES
-    common/shader.cpp
-    common/element.cpp
+    
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
@@ -74,8 +73,7 @@ ENDFUNCTION()
 FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/shaders)
 FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/misc)
 ADD_RESOURCES(RES
-    shaders/test.vert
-    shaders/test.frag
+    shaders/outline.frag
     shaders/shade.vert
     shaders/shade.frag
     misc/a.obj

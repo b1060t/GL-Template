@@ -72,24 +72,45 @@ ENDFUNCTION()
 
 FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/shaders)
 FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/misc)
-ADD_RESOURCES(RES
+
+find_package(Threads)
+
+ADD_RESOURCES(A_RES
     shaders/outline.frag
     shaders/shade.vert
     shaders/shade.frag
+    shaders/tex.vert
+    shaders/tex.frag
     misc/a.obj
     misc/diffuse.jpg
     misc/specular.jpg
     misc/normal.png
 )
-
-find_package(Threads)
 add_executable(a 
     main/test.cpp
     ${CPP_FILES}
-    ${RES}
+    ${A_RES}
+)
+target_link_libraries(a
+  ${ALL_LIBS}
+  ${CMAKE_THREAD_LIBS_INIT}
 )
 
-target_link_libraries(a
+ADD_RESOURCES(UBO_RES
+    shaders/shade.vert
+    shaders/shade.frag
+    shaders/tex.vert
+    shaders/tex.frag
+    misc/a.obj
+    misc/diffuse.jpg
+    misc/specular.jpg
+    misc/normal.png
+)
+add_executable(ubo 
+    main/ubotest.cpp
+    ${UBO_RES}
+)
+target_link_libraries(ubo
   ${ALL_LIBS}
   ${CMAKE_THREAD_LIBS_INIT}
 )

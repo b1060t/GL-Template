@@ -33,11 +33,25 @@ using namespace tide;
 
 extern const char _binary_shaders_shade_vert_start, _binary_shaders_shade_vert_end;
 extern const char _binary_shaders_shade_frag_start, _binary_shaders_shade_frag_end;
+extern const char _binary_shaders_tex_vert_start, _binary_shaders_tex_vert_end;
+extern const char _binary_shaders_tex_frag_start, _binary_shaders_tex_frag_end;
 extern const char _binary_shaders_outline_frag_start, _binary_shaders_outline_frag_end;
 extern const char _binary_misc_diffuse_jpg_start, _binary_misc_diffuse_jpg_end;
 extern const char _binary_misc_specular_jpg_start, _binary_misc_specular_jpg_end;
 extern const char _binary_misc_normal_png_start, _binary_misc_normal_png_end;
 extern const char _binary_misc_a_obj_start, _binary_misc_a_obj_end;
+
+GLfloat vertices[] = {
+    // positions   // texCoords
+    -1.0f,  1.0f,  0.0f, 1.0f,
+    -1.0f, -1.0f,  0.0f, 0.0f,
+     1.0f, -1.0f,  1.0f, 0.0f,
+     1.0f,  1.0f,  1.0f, 1.0f
+};
+GLint indices[] = {
+    0, 1, 2,
+    0, 2, 3
+};
 
 #define WIDTH 1024
 #define HEIGHT 768
@@ -79,11 +93,6 @@ int main( void )
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-
 	std::vector<Attr> v;
 	Attr a1, a2, a3;
 	a1.size=3; a1.norm=GL_FALSE; a1.type=GL_FLOAT; a1.stride=8; a1.offset=0;
@@ -124,6 +133,11 @@ int main( void )
 	    std::string(&_binary_shaders_shade_frag_start, &_binary_shaders_shade_frag_end - &_binary_shaders_shade_frag_start)
 	);
 
+    Shader tex_shader(
+	    std::string(&_binary_shaders_tex_vert_start, &_binary_shaders_tex_vert_end - &_binary_shaders_tex_vert_start),
+	    std::string(&_binary_shaders_tex_frag_start, &_binary_shaders_tex_frag_end - &_binary_shaders_tex_frag_start)
+	);
+
     Shader outline_shader(
         std::string(&_binary_shaders_shade_vert_start, &_binary_shaders_shade_vert_end - &_binary_shaders_shade_vert_start),
 	    std::string(&_binary_shaders_outline_frag_start, &_binary_shaders_outline_frag_end - &_binary_shaders_outline_frag_start)
@@ -161,6 +175,16 @@ int main( void )
 	o.addMat4Uniform("Projection", glm::mat4(1.0f));
 	o.addVec3Uniform("viewPos", glm::vec3(0.0f));
 
+    std::vector<Attr> vt;
+	Attr at1, at2;
+	at1.size=2; at1.norm=GL_FALSE; at1.type=GL_FLOAT; at1.stride=4; at1.offset=0;
+	at2.size=2; at2.norm=GL_FALSE; at2.type=GL_FLOAT; at2.stride=4; at2.offset=2;
+	vt.push_back(at1); vt.push_back(at2);
+    Element t(&vertices[0], &indices[0], 16*sizeof(GLfloat), 6*sizeof(GLint), vt);
+    t.attachShader(&tex_shader);
+    t.addTexture("texture", GLuint(0));
+    t.internal_model = false;
+
     e.internal_model = true;
     e.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
     e.setScale(glm::vec3(0.8f));
@@ -174,17 +198,39 @@ int main( void )
 	Camera cam(window, WIDTH, HEIGHT, 45.0f, glm::vec3(0,0,4));
     glfwSetCursorPos(window, WIDTH/2, HEIGHT/2);
 
-    glEnable(GL_STENCIL_TEST);
-    glEnable(GL_DEPTH_TEST);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    GLuint fbo;
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    GLuint texbuffer;
+    glGenTextures(1, &texbuffer);
+    glBindTexture(GL_TEXTURE_2D, texbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texbuffer, 0);
+    GLuint rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo); 
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, WIDTH, HEIGHT);  
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) printf("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
 	do{
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
 		cam.loop();
 
 		float x = 1.0f * sin(glfwGetTime());
 		float z = 1.0f * cos(glfwGetTime());
+
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glEnable(GL_DEPTH_TEST);
+	    glDepthFunc(GL_LESS);
+        glEnable(GL_STENCIL_TEST);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
         glStencilFunc(GL_ALWAYS, 1, 0xFF);
         glStencilMask(0xFF);
@@ -207,6 +253,16 @@ int main( void )
 
         glStencilMask(0xFF);
         glEnable(GL_DEPTH_TEST);
+
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_STENCIL_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+
+        t.texdic["texture"]=texbuffer;
+        t.render();
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();

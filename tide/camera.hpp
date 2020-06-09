@@ -1,5 +1,5 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#ifndef TIDE_CAMERA_HPP
+#define TIDE_CAMERA_HPP
 
 #include <common.hpp>
 

@@ -1,5 +1,5 @@
-#ifndef ELEMENT_HPP
-#define ELEMENT_HPP
+#ifndef TIDE_ELEMENT_HPP
+#define TIDE_ELEMENT_HPP
 
 #include <common.hpp>
 #include <map>

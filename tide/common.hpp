@@ -1,5 +1,5 @@
-#ifndef COMMON_HPP
-#define COMMON_HPP
+#ifndef TIDE_COMMON_HPP
+#define TIDE_COMMON_HPP
 
 #include <shader.hpp>
 #include <GL/glew.h>

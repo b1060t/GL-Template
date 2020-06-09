@@ -31,6 +31,9 @@ uniform vec3 viewPos;
 
 void main() {
 
+    vec3 normal = texture(material.normal, UV).rgb;
+    normal = normalize(normal*2.0-1.0);
+
     vec4 diffuseT = texture(material.diffuse, UV);
     vec4 specularT = texture(material.specular, UV);
 
@@ -38,7 +41,7 @@ void main() {
     vec4 ambient = diffuseT * vec4(light.ambient,1.0f);
     //diffuse
     vec3 lightDir = normalize(light.pos - Pos);
-    float d = clamp(dot(-lightDir, Normal),0,1);
+    float d = clamp(dot(-lightDir, normal),0,1);
     vec4 diffuse = diffuseT * d * vec4(light.diffuse,1.0f);
     //specular
     vec3 viewDir = normalize(viewPos - Pos);

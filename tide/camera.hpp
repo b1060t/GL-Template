@@ -1,7 +1,7 @@
 #ifndef TIDE_CAMERA_HPP
 #define TIDE_CAMERA_HPP
 
-#include <common.hpp>
+#include <external.hpp>
 
 namespace tide
 {

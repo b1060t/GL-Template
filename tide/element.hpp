@@ -1,7 +1,7 @@
 #ifndef TIDE_ELEMENT_HPP
 #define TIDE_ELEMENT_HPP
 
-#include <common.hpp>
+#include <external.hpp>
 #include <map>
 
 namespace tide

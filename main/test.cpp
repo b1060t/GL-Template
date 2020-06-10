@@ -8,7 +8,7 @@
 
 // Include GLFW
 #include <GLFW/glfw3.h>
-GLFWwindow* window;
+//GLFWwindow* window;
 
 // Include GLM
 #include <glm/glm.hpp>
@@ -21,6 +21,8 @@ GLFWwindow* window;
 #include <shader.hpp>
 #include <element.hpp>
 #include <camera.hpp>
+#include <context.hpp>
+#include <common.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -60,47 +62,9 @@ GLint indices[] = {
 
 int main( void )
 {
-	// Initialise GLFW
-	if( !glfwInit() )
-	{
-		fprintf( stderr, "Failed to initialize GLFW\n" );
-		getchar();
-		return -1;
-	}
+	Context context("Test");
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	// Open a window and create its OpenGL context
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Test", NULL, NULL);
-	if( window == NULL ){
-		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
-		getchar();
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-
-	// Initialize GLEW
-	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW\n");
-		getchar();
-		glfwTerminate();
-		return -1;
-	}
-
-	// Ensure we can capture the escape key being pressed below
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
-	std::vector<Attr> v;
-	Attr a1, a2, a3;
-	a1.size=3; a1.norm=GL_FALSE; a1.type=GL_FLOAT; a1.stride=8; a1.offset=0;
-	a2.size=2; a2.norm=GL_FALSE; a2.type=GL_FLOAT; a2.stride=8; a2.offset=3;
-	a3.size=3; a3.norm=GL_FALSE; a3.type=GL_FLOAT; a3.stride=8; a3.offset=5;
-	v.push_back(a1); v.push_back(a2); v.push_back(a3);
+	glfwSetInputMode(context.getWindow(), GLFW_STICKY_KEYS, GL_TRUE);
 
 	mango::Memory diffuse_mem((unsigned char*)(&_binary_misc_diffuse_jpg_start), (&_binary_misc_diffuse_jpg_end-&_binary_misc_diffuse_jpg_start)*sizeof(unsigned char));
 	mango::Bitmap diffuse_tex(diffuse_mem, ".jpg", mango::FORMAT_B8G8R8);
@@ -149,7 +113,7 @@ int main( void )
 	Assimp::Importer importer;
 	//const aiScene* sceneObjPtr = importer.ReadFile("a.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
 	const aiScene* sceneObjPtr = importer.ReadFileFromMemory((void*)(&_binary_misc_a_obj_start), (&_binary_misc_a_obj_end-&_binary_misc_a_obj_start)*sizeof(char),aiProcess_ValidateDataStructure);
-	Element e(sceneObjPtr, v);
+	Element e(sceneObjPtr, tide::THREED_OBJECT_ATTR);
 	e.attachShader(&shade_shader);
 	e.addTexture("material.diffuse", diffuse);
 	e.addTexture("material.specular", specular);
@@ -163,7 +127,7 @@ int main( void )
 	e.addMat4Uniform("Projection", glm::mat4(1.0f));
 	e.addVec3Uniform("viewPos", glm::vec3(0.0f));
 
-    Element o(sceneObjPtr, v);
+    Element o(sceneObjPtr, tide::THREED_OBJECT_ATTR);
 	o.attachShader(&outline_shader);
 	o.addTexture("material.diffuse", diffuse);
 	o.addTexture("material.specular", specular);
@@ -177,12 +141,7 @@ int main( void )
 	o.addMat4Uniform("Projection", glm::mat4(1.0f));
 	o.addVec3Uniform("viewPos", glm::vec3(0.0f));
 
-    std::vector<Attr> vt;
-	Attr at1, at2;
-	at1.size=2; at1.norm=GL_FALSE; at1.type=GL_FLOAT; at1.stride=4; at1.offset=0;
-	at2.size=2; at2.norm=GL_FALSE; at2.type=GL_FLOAT; at2.stride=4; at2.offset=2;
-	vt.push_back(at1); vt.push_back(at2);
-    Element t(&vertices[0], &indices[0], 16*sizeof(GLfloat), 6*sizeof(GLint), vt);
+    Element t(&vertices[0], &indices[0], 16*sizeof(GLfloat), 6*sizeof(GLint), tide::TWOD_TEXTURE_ATTR);
     t.attachShader(&tex_shader);
     t.addTexture("texture", GLuint(0));
     t.internal_model = false;
@@ -197,8 +156,8 @@ int main( void )
     o.setScale(glm::vec3(0.82f));
     o.setRotation(glm::vec3(0.0f,0.0f,0.0f));
 
-	Camera cam(window, WIDTH, HEIGHT, 45.0f, glm::vec3(0,0,4));
-    glfwSetCursorPos(window, WIDTH/2, HEIGHT/2);
+	Camera cam(context.getWindow(), WIDTH, HEIGHT, 45.0f, glm::vec3(0,0,4));
+    glfwSetCursorPos(context.getWindow(), WIDTH/2, HEIGHT/2);
 
 
     GLuint fbo;
@@ -266,16 +225,9 @@ int main( void )
         t.texdic["texture"]=texbuffer;
         t.render();
 		
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-
+		context.loop();
 	}
-	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-		   glfwWindowShouldClose(window) == 0 );
-
-
-	// Close OpenGL window and terminate GLFW
-	glfwTerminate();
+	while(context.shouldClose(GLFW_KEY_ESCAPE));
 
 	return 0;
 }

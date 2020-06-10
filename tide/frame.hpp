@@ -1,7 +1,7 @@
 #ifndef TIDE_FRAME_HPP
 #define TIDE_FRAME_HPP
 
-#include <common.hpp>
+#include <external.hpp>
 
 namespace tide
 {

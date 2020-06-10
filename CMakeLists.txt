@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.3)
 project(glTemplate)
 
 find_package(OpenGL REQUIRED)
@@ -13,7 +13,9 @@ macro(get_WIN32_WINNT version)
     endif()
 endmacro()
 get_WIN32_WINNT(ver)
+if(NOT MSVC)
 add_definitions(-D_WIN32_WINNT=${ver})
+endif(NOT MSVC)
 
 add_subdirectory(external)
 

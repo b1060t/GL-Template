@@ -2,7 +2,7 @@
 
 ## Build
 
-Tested on Windows10 & Ubuntu18.04
+Tested on Windows10(mingw & visual studio 2017) & Ubuntu18.04
 
 ```bash
 git submodule update --init

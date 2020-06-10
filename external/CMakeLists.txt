@@ -48,11 +48,19 @@ set(BUILD_SHARED_LIBS OFF)
 set(ASSIMP_NO_EXPORT ON)
 set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT FALSE)
 set(ASSIMP_BUILD_OBJ_IMPORTER TRUE)
+if(MSVC)
+#set(CMAKE_CXX_FLAGS "/O3")
+else()
 set(CMAKE_CXX_FLAGS "-O3")
+endif(MSVC)
 add_subdirectory(assimp)
 
 #mango
+if(MSVC)
+ADD_DEFINITIONS(/permissive)
+else()
 ADD_DEFINITIONS(-fpermissive)
+endif(MSVC)
 include_directories(
     mango/include/
     mango/source/external/libwebp/

@@ -31,15 +31,17 @@ GLFWwindow* window;
 using namespace glm;
 using namespace tide;
 
-extern const char _binary_shaders_shade_vert_start, _binary_shaders_shade_vert_end;
-extern const char _binary_shaders_shade_frag_start, _binary_shaders_shade_frag_end;
-extern const char _binary_shaders_tex_vert_start, _binary_shaders_tex_vert_end;
-extern const char _binary_shaders_tex_frag_start, _binary_shaders_tex_frag_end;
-extern const char _binary_shaders_outline_frag_start, _binary_shaders_outline_frag_end;
-extern const char _binary_misc_diffuse_jpg_start, _binary_misc_diffuse_jpg_end;
-extern const char _binary_misc_specular_jpg_start, _binary_misc_specular_jpg_end;
-extern const char _binary_misc_normal_png_start, _binary_misc_normal_png_end;
-extern const char _binary_misc_a_obj_start, _binary_misc_a_obj_end;
+extern "C" {
+	extern const char _binary_shaders_shade_vert_start, _binary_shaders_shade_vert_end;
+	extern const char _binary_shaders_shade_frag_start, _binary_shaders_shade_frag_end;
+	extern const char _binary_shaders_tex_vert_start, _binary_shaders_tex_vert_end;
+	extern const char _binary_shaders_tex_frag_start, _binary_shaders_tex_frag_end;
+	extern const char _binary_shaders_outline_frag_start, _binary_shaders_outline_frag_end;
+	extern const char _binary_misc_diffuse_jpg_start, _binary_misc_diffuse_jpg_end;
+	extern const char _binary_misc_specular_jpg_start, _binary_misc_specular_jpg_end;
+	extern const char _binary_misc_normal_png_start, _binary_misc_normal_png_end;
+	extern const char _binary_misc_a_obj_start, _binary_misc_a_obj_end;
+}
 
 GLfloat vertices[] = {
     // positions   // texCoords

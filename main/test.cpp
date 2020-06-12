@@ -144,6 +144,8 @@ int main( void )
     Element t(&vertices[0], &indices[0], 16*sizeof(GLfloat), 6*sizeof(GLint), tide::TWOD_TEXTURE_ATTR);
     t.attachShader(&tex_shader);
     t.addTexture("texture", GLuint(0));
+    t.addFloatUniform("width", WIDTH);
+    t.addFloatUniform("height", HEIGHT);
     t.internal_model = false;
 
     e.internal_model = true;

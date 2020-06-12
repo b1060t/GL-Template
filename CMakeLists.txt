@@ -98,21 +98,23 @@ target_link_libraries(a
   ${CMAKE_THREAD_LIBS_INIT}
 )
 
-ADD_RESOURCES(UBO_RES
-    shaders/shade.vert
-    shaders/shade.frag
+
+ADD_RESOURCES(POSTPROCESS_RES
     shaders/tex.vert
     shaders/tex.frag
-    misc/a.obj
-    misc/diffuse.jpg
-    misc/specular.jpg
-    misc/normal.png
+    misc/postprocess.jpg
+    misc/guided.png
+    shaders/mean.frag
+    shaders/corr.frag
+    shaders/alpha.frag
+    shaders/beta.frag
+    shaders/guided.frag
 )
-add_executable(ubo 
-    main/ubotest.cpp
-    ${UBO_RES}
+add_executable(postprocess 
+    main/postprocess.cpp
+    ${POSTPROCESS_RES}
 )
-target_link_libraries(ubo
+target_link_libraries(postprocess
   ${ALL_LIBS}
   ${CMAKE_THREAD_LIBS_INIT}
 )

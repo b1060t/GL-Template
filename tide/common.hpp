@@ -21,6 +21,17 @@ namespace tide
         {2, GL_FLOAT, GL_FALSE, 4, 2}  //uv coordinates u,v
     };
 
+    static const GLfloat ImageVertices[] = {
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+    static const GLint ImageIndices[] {
+        0, 1, 2,
+        0, 2, 3
+    };
 }
 
 #endif

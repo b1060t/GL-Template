@@ -42,6 +42,18 @@ namespace tide
         {
             
         }
+        void bind()
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+        }
+        void unbind()
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+        GLuint getTex()
+        {
+            return _tex;
+        }
     };
 }
 

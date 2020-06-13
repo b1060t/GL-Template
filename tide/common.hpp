@@ -23,6 +23,10 @@ namespace tide
     static const std::vector<Attr> TWOD_POINT_ATTR = {
         {2, GL_FLOAT, GL_FALSE, 2, 0}, //position x,y
     };
+    static const std::vector<Attr> TWOD_COLORED_POINT_ATTR = {
+        {2, GL_FLOAT, GL_FALSE, 5, 0}, //position x,y
+        {3, GL_FLOAT, GL_FALSE, 5, 2}, //color r,g,b
+    };
 
     static const GLfloat ImageVertices[] = {
         // positions   // texCoords

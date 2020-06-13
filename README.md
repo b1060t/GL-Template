@@ -17,3 +17,11 @@ make
 1. [Quaternion proof](http://graphics.stanford.edu/courses/cs348a-17-winter/Papers/quaternion.pdf)
 
 2. [What are the different texture maps for](https://help.poliigon.com/en/articles/1712652-what-are-the-different-texture-maps-for)
+
+## Screenshots
+
+![Shade](screenshots/shade.png)
+
+![Normal Visualization](screenshots/normal_visualize.png)
+
+![Guided filter](screenshots/guidedfilter.png)

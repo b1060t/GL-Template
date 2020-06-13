@@ -141,7 +141,7 @@ int main( void )
 	o.addMat4Uniform("Projection", glm::mat4(1.0f));
 	o.addVec3Uniform("viewPos", glm::vec3(0.0f));
 
-    Element t(&vertices[0], &indices[0], 16*sizeof(GLfloat), 6*sizeof(GLint), tide::TWOD_TEXTURE_ATTR);
+    Element t(const_cast<GLfloat*>(&ImageVertices[0]), const_cast<GLint*>(&indices[0]), 16*sizeof(GLfloat), 6*sizeof(GLint), tide::TWOD_TEXTURE_ATTR);
     t.attachShader(&tex_shader);
     t.addTexture("texture", GLuint(0));
     t.addFloatUniform("width", WIDTH);

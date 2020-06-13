@@ -40,10 +40,10 @@ extern "C" {
 }
 
 const GLfloat vertices[] = {
-	-0.5f, 0.5f,
-	-0.5f, -0.5f,
-	0.5f, 0.5f,
-	0.5f, -0.5f
+	-0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	 0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+	 0.5f, -0.5f, 1.0f, 1.0f, 0.0f
 };
 
 const GLint indices[] = {
@@ -61,7 +61,7 @@ int main()
 	    std::string(&_binary_shaders_geotest_frag_start, &_binary_shaders_geotest_frag_end - &_binary_shaders_geotest_frag_start)
 	);
 
-	Element e(const_cast<GLfloat*>(&vertices[0]), const_cast<GLint*>(&indices[0]), sizeof(GLfloat)*8, sizeof(GLint)*4, TWOD_POINT_ATTR);
+	Element e(const_cast<GLfloat*>(&vertices[0]), const_cast<GLint*>(&indices[0]), sizeof(GLfloat)*20, sizeof(GLint)*4, TWOD_COLORED_POINT_ATTR);
 	e.attachShader(&geo_shader);
 
 	do

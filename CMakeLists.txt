@@ -131,3 +131,24 @@ target_link_libraries(postprocess
   ${ALL_LIBS}
   ${CMAKE_THREAD_LIBS_INIT}
 )
+
+ADD_RESOURCES(NORMAL_RES
+    shaders/shade.vert
+    shaders/shade.frag
+    shaders/normal.vert
+    shaders/normal.geom
+    shaders/normal.frag
+    misc/a.obj
+    misc/diffuse.jpg
+    misc/specular.jpg
+    misc/normal.png
+)
+add_executable(normal 
+    main/normalvisualize.cpp
+    ${CPP_FILES}
+    ${NORMAL_RES}
+)
+target_link_libraries(normal
+  ${ALL_LIBS}
+  ${CMAKE_THREAD_LIBS_INIT}
+)

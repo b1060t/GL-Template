@@ -210,7 +210,7 @@ namespace tide
         {
             _shader = shader;
         }
-        void render()
+        void render(GLenum mode=GL_TRIANGLES)
         {
             _shader->use();
 
@@ -247,7 +247,7 @@ namespace tide
             }
 
             glBindVertexArray(_vao);
-            glDrawElements(GL_TRIANGLES, _indices_size/sizeof(int), GL_UNSIGNED_INT, 0);
+            glDrawElements(mode, _indices_size/sizeof(int), GL_UNSIGNED_INT, 0);
             glBindVertexArray(0);
         }
         void addTexture(std::string type, mango::Bitmap* bitmap)

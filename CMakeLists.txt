@@ -98,6 +98,19 @@ target_link_libraries(a
   ${CMAKE_THREAD_LIBS_INIT}
 )
 
+ADD_RESOURCES(GEOMETRY_RES
+    shaders/geotest.vert
+    shaders/geotest.geom
+    shaders/geotest.frag
+)
+add_executable(geometry 
+    main/geometry.cpp
+    ${GEOMETRY_RES}
+)
+target_link_libraries(geometry
+  ${ALL_LIBS}
+  ${CMAKE_THREAD_LIBS_INIT}
+)
 
 ADD_RESOURCES(POSTPROCESS_RES
     shaders/tex.vert

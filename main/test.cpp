@@ -34,15 +34,15 @@ using namespace glm;
 using namespace tide;
 
 extern "C" {
-	extern const char _binary_shaders_shade_vert_start, _binary_shaders_shade_vert_end;
-	extern const char _binary_shaders_shade_frag_start, _binary_shaders_shade_frag_end;
-	extern const char _binary_shaders_tex_vert_start, _binary_shaders_tex_vert_end;
-	extern const char _binary_shaders_tex_frag_start, _binary_shaders_tex_frag_end;
-	extern const char _binary_shaders_outline_frag_start, _binary_shaders_outline_frag_end;
-	extern const char _binary_misc_diffuse_jpg_start, _binary_misc_diffuse_jpg_end;
-	extern const char _binary_misc_specular_jpg_start, _binary_misc_specular_jpg_end;
-	extern const char _binary_misc_normal_png_start, _binary_misc_normal_png_end;
-	extern const char _binary_misc_a_obj_start, _binary_misc_a_obj_end;
+    EXTLD(shaders_shade_vert);
+    EXTLD(shaders_shade_frag);
+    EXTLD(shaders_tex_vert);
+    EXTLD(shaders_tex_frag);
+    EXTLD(shaders_outline_frag);
+    EXTLD(misc_diffuse_jpg);
+    EXTLD(misc_specular_jpg);
+    EXTLD(misc_normal_png);
+    EXTLD(misc_a_obj);
 }
 
 GLfloat vertices[] = {
@@ -66,11 +66,11 @@ int main( void )
 
 	glfwSetInputMode(context.getWindow(), GLFW_STICKY_KEYS, GL_TRUE);
 
-	mango::Memory diffuse_mem((unsigned char*)(&_binary_misc_diffuse_jpg_start), (&_binary_misc_diffuse_jpg_end-&_binary_misc_diffuse_jpg_start)*sizeof(unsigned char));
+	mango::Memory diffuse_mem((unsigned char*)LDVAR(misc_diffuse_jpg), LDLEN(misc_diffuse_jpg));
 	mango::Bitmap diffuse_tex(diffuse_mem, ".jpg", mango::FORMAT_B8G8R8);
-	mango::Memory specular_mem((unsigned char*)(&_binary_misc_specular_jpg_start), (&_binary_misc_specular_jpg_end-&_binary_misc_specular_jpg_start)*sizeof(unsigned char));
+	mango::Memory specular_mem((unsigned char*)LDVAR(misc_specular_jpg), LDLEN(misc_specular_jpg));
 	mango::Bitmap specular_tex(specular_mem, ".jpg", mango::FORMAT_B8G8R8);
-	mango::Memory normal_mem((unsigned char*)(&_binary_misc_normal_png_start), (&_binary_misc_normal_png_end-&_binary_misc_normal_png_start)*sizeof(unsigned char));
+	mango::Memory normal_mem((unsigned char*)LDVAR(misc_normal_png), LDLEN(misc_normal_png));
 	mango::Bitmap normal_tex(normal_mem, ".png", mango::FORMAT_B8G8R8);
 	GLuint diffuse, specular, normal;
 	glGenTextures(1, &diffuse);
@@ -95,24 +95,24 @@ int main( void )
 	//);
 
 	Shader shade_shader(
-	    std::string(&_binary_shaders_shade_vert_start, &_binary_shaders_shade_vert_end - &_binary_shaders_shade_vert_start),
-	    std::string(&_binary_shaders_shade_frag_start, &_binary_shaders_shade_frag_end - &_binary_shaders_shade_frag_start)
+	    std::string(LDVAR(shaders_shade_vert), LDLEN(shaders_shade_vert)),
+	    std::string(LDVAR(shaders_shade_frag), LDLEN(shaders_shade_frag))
 	);
 
     Shader tex_shader(
-	    std::string(&_binary_shaders_tex_vert_start, &_binary_shaders_tex_vert_end - &_binary_shaders_tex_vert_start),
-	    std::string(&_binary_shaders_tex_frag_start, &_binary_shaders_tex_frag_end - &_binary_shaders_tex_frag_start)
+	    std::string(LDVAR(shaders_tex_vert), LDLEN(shaders_tex_vert)),
+	    std::string(LDVAR(shaders_tex_frag), LDLEN(shaders_tex_frag))
 	);
 
     Shader outline_shader(
-        std::string(&_binary_shaders_shade_vert_start, &_binary_shaders_shade_vert_end - &_binary_shaders_shade_vert_start),
-	    std::string(&_binary_shaders_outline_frag_start, &_binary_shaders_outline_frag_end - &_binary_shaders_outline_frag_start)
+        std::string(LDVAR(shaders_shade_vert), LDLEN(shaders_shade_vert)),
+	    std::string(LDVAR(shaders_outline_frag), LDLEN(shaders_outline_frag))
     );
 
 
 	Assimp::Importer importer;
 	//const aiScene* sceneObjPtr = importer.ReadFile("a.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
-	const aiScene* sceneObjPtr = importer.ReadFileFromMemory((void*)(&_binary_misc_a_obj_start), (&_binary_misc_a_obj_end-&_binary_misc_a_obj_start)*sizeof(char),aiProcess_ValidateDataStructure);
+	const aiScene* sceneObjPtr = importer.ReadFileFromMemory((void*)LDVAR(misc_a_obj), LDLEN(misc_a_obj),aiProcess_ValidateDataStructure);
 	Element e(sceneObjPtr, tide::THREED_OBJECT_ATTR);
 	e.attachShader(&shade_shader);
 	e.addTexture("material.diffuse", diffuse);

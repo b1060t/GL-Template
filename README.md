@@ -1,5 +1,7 @@
 # OpenGL Template
 
+![](https://github.com/Biobots/GL-Template/workflows/Linux/badge.svg) ![](https://github.com/Biobots/GL-Template/workflows/Windows/badge.svg) ![](https://github.com/Biobots/GL-Template/workflows/OSX/badge.svg)
+
 ## Build
 
 Tested on Windows10(mingw & visual studio 2017) & Ubuntu18.04

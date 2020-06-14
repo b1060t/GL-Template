@@ -27,20 +27,20 @@ using namespace glm;
 using namespace tide;
 
 extern "C" {
-	extern const char _binary_shaders_tex_vert_start, _binary_shaders_tex_vert_end;
-	extern const char _binary_shaders_tex_frag_start, _binary_shaders_tex_frag_end;
-    extern const char _binary_shaders_mean_frag_start, _binary_shaders_mean_frag_end;
-    extern const char _binary_shaders_corr_frag_start, _binary_shaders_corr_frag_end;
-    extern const char _binary_shaders_alpha_frag_start, _binary_shaders_alpha_frag_end;
-    extern const char _binary_shaders_beta_frag_start, _binary_shaders_beta_frag_end;
-    extern const char _binary_shaders_guided_frag_start, _binary_shaders_guided_frag_end;
-	extern const char _binary_misc_postprocess_jpg_start, _binary_misc_postprocess_jpg_end;
-    extern const char _binary_misc_guided_png_start, _binary_misc_guided_png_end;
+    EXTLD(shaders_tex_vert);
+    EXTLD(shaders_tex_frag);
+    EXTLD(shaders_mean_frag);
+    EXTLD(shaders_corr_frag);
+    EXTLD(shaders_alpha_frag);
+    EXTLD(shaders_beta_frag);
+    EXTLD(shaders_guided_frag);
+    EXTLD(misc_postprocess_jpg);
+    EXTLD(misc_guided_png);
 }
 
 int main()
 {
-    mango::Memory img_mem((unsigned char*)(&_binary_misc_guided_png_start), (&_binary_misc_guided_png_end-&_binary_misc_guided_png_start)*sizeof(unsigned char));
+    mango::Memory img_mem((unsigned char*)LDVAR(misc_guided_png), LDLEN(misc_guided_png));
     mango::Bitmap img_tex(img_mem, ".png", mango::FORMAT_B8G8R8);
     Context context("Test", img_tex.width, img_tex.height);
     glfwSetInputMode(context.getWindow(), GLFW_STICKY_KEYS, GL_TRUE);
@@ -53,33 +53,33 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
     Shader tex_shader(
-	    std::string(&_binary_shaders_tex_vert_start, &_binary_shaders_tex_vert_end - &_binary_shaders_tex_vert_start),
-	    std::string(&_binary_shaders_tex_frag_start, &_binary_shaders_tex_frag_end - &_binary_shaders_tex_frag_start)
+	    std::string(LDVAR(shaders_tex_vert), LDLEN(shaders_tex_vert)),
+	    std::string(LDVAR(shaders_tex_frag), LDLEN(shaders_tex_frag))
 	);
 
     Shader mean_shader(
-	    std::string(&_binary_shaders_tex_vert_start, &_binary_shaders_tex_vert_end - &_binary_shaders_tex_vert_start),
-	    std::string(&_binary_shaders_mean_frag_start, &_binary_shaders_mean_frag_end - &_binary_shaders_mean_frag_start)
+	    std::string(LDVAR(shaders_tex_vert), LDLEN(shaders_tex_vert)),
+	    std::string(LDVAR(shaders_mean_frag), LDLEN(shaders_mean_frag))
 	);
 
     Shader corr_shader(
-	    std::string(&_binary_shaders_tex_vert_start, &_binary_shaders_tex_vert_end - &_binary_shaders_tex_vert_start),
-	    std::string(&_binary_shaders_corr_frag_start, &_binary_shaders_corr_frag_end - &_binary_shaders_corr_frag_start)
+	    std::string(LDVAR(shaders_tex_vert), LDLEN(shaders_tex_vert)),
+	    std::string(LDVAR(shaders_corr_frag), LDLEN(shaders_corr_frag))
 	);
 
     Shader alpha_shader(
-	    std::string(&_binary_shaders_tex_vert_start, &_binary_shaders_tex_vert_end - &_binary_shaders_tex_vert_start),
-	    std::string(&_binary_shaders_alpha_frag_start, &_binary_shaders_alpha_frag_end - &_binary_shaders_alpha_frag_start)
+	    std::string(LDVAR(shaders_tex_vert), LDLEN(shaders_tex_vert)),
+	    std::string(LDVAR(shaders_alpha_frag), LDLEN(shaders_alpha_frag))
 	);
 
     Shader beta_shader(
-	    std::string(&_binary_shaders_tex_vert_start, &_binary_shaders_tex_vert_end - &_binary_shaders_tex_vert_start),
-	    std::string(&_binary_shaders_beta_frag_start, &_binary_shaders_beta_frag_end - &_binary_shaders_beta_frag_start)
+	    std::string(LDVAR(shaders_tex_vert), LDLEN(shaders_tex_vert)),
+	    std::string(LDVAR(shaders_beta_frag), LDLEN(shaders_beta_frag))
 	);
 
     Shader guided_shader(
-	    std::string(&_binary_shaders_tex_vert_start, &_binary_shaders_tex_vert_end - &_binary_shaders_tex_vert_start),
-	    std::string(&_binary_shaders_guided_frag_start, &_binary_shaders_guided_frag_end - &_binary_shaders_guided_frag_start)
+	    std::string(LDVAR(shaders_tex_vert), LDLEN(shaders_tex_vert)),
+	    std::string(LDVAR(shaders_guided_frag), LDLEN(shaders_guided_frag))
 	);
 
     tide::Element mean(const_cast<GLfloat*>(&ImageVertices[0]), const_cast<GLint*>(&ImageIndices[0]), 16*sizeof(GLfloat), 6*sizeof(GLint), tide::TWOD_TEXTURE_ATTR);

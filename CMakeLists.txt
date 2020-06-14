@@ -3,12 +3,13 @@ project(glTemplate)
 
 find_package(OpenGL REQUIRED)
 
+set(CMAKE_CXX_STANDARD 14)
+
 macro(get_WIN32_WINNT version)
     if (WIN32 AND CMAKE_SYSTEM_VERSION)
         set(ver ${CMAKE_SYSTEM_VERSION})
         string(REPLACE "." "" ver ${ver})
         string(REGEX REPLACE "([0-9])" "0\\1" ver ${ver})
-
         set(${version} "0x${ver}")
     endif()
 endmacro()
@@ -28,15 +29,25 @@ include_directories(
     external/mango/include/
 ) 
 
-set(ALL_LIBS
-	${OPENGL_LIBRARY}
-	glfw
-    GLEW
-    assimp
-    mango-opengl
-    -static-libgcc
-    -static-libstdc++
-)
+if(APPLE)
+    set(ALL_LIBS
+        ${OPENGL_LIBRARY}
+        glfw
+        GLEW
+        assimp
+        mango-opengl
+    )
+else()
+    set(ALL_LIBS
+        ${OPENGL_LIBRARY}
+        glfw
+        GLEW
+        assimp
+        mango-opengl
+        -static-libgcc
+        -static-libstdc++
+    )
+endif(APPLE)
 
 set(CPP_FILES
     
@@ -60,13 +71,23 @@ FUNCTION(ADD_RESOURCES out_var)
   FOREACH(in_f ${ARGN})
     FILE(RELATIVE_PATH src_f ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${in_f})
     SET(out_f "${PROJECT_BINARY_DIR}/${in_f}.o")
-    ADD_CUSTOM_COMMAND(OUTPUT ${out_f}
-      COMMAND ld -r -b binary -o ${out_f} ${src_f}
-      DEPENDS ${in_f}
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-      COMMENT "Building object ${out_f}"
-      VERBATIM
-      )
+    if(NOT APPLE)
+        ADD_CUSTOM_COMMAND(OUTPUT ${out_f}
+          COMMAND ld -r -b binary -o ${out_f} ${src_f}
+          DEPENDS ${in_f}
+          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+          COMMENT "Building object ${out_f}"
+          VERBATIM
+          )
+    else()
+        ADD_CUSTOM_COMMAND(OUTPUT ${out_f}
+          COMMAND /usr/local/opt/binutils/bin/gobjcopy -I binary -O mach-o-x86-64 -B i386:x86-64 ${src_f} ${out_f}
+          DEPENDS ${in_f}
+          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+          COMMENT "Building object ${out_f}"
+          VERBATIM
+          )
+    endif()
     LIST(APPEND result ${out_f})
   ENDFOREACH()
   SET(${out_var} "${result}" PARENT_SCOPE)

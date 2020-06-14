@@ -1,0 +1,29 @@
+name: OSX
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: install dependencies
+      run: |
+        brew install ninja
+        brew install binutils
+        export PATH="/usr/local/opt/binutils/bin:$PATH"
+        /usr/local/opt/binutils/bin/gobjcopy --info
+    - name: download submodule
+      run: git submodule update --init
+    - name: cmake configure
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+    - name: build
+      run: |
+        cmake --build .
+        nm shaders/normal.frag.o
+      working-directory: build

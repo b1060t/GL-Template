@@ -34,9 +34,9 @@ using namespace glm;
 using namespace tide;
 
 extern "C" {
-	extern const char _binary_shaders_geotest_vert_start, _binary_shaders_geotest_vert_end;
-	extern const char _binary_shaders_geotest_frag_start, _binary_shaders_geotest_frag_end;
-	extern const char _binary_shaders_geotest_geom_start, _binary_shaders_geotest_geom_end;
+    EXTLD(shaders_geotest_vert);
+    EXTLD(shaders_geotest_frag);
+    EXTLD(shaders_geotest_geom);
 }
 
 const GLfloat vertices[] = {
@@ -56,9 +56,9 @@ int main()
 	glfwSetInputMode(context.getWindow(), GLFW_STICKY_KEYS, GL_TRUE);
 
 	Shader geo_shader(
-		std::string(&_binary_shaders_geotest_vert_start, &_binary_shaders_geotest_vert_end - &_binary_shaders_geotest_vert_start),
-		std::string(&_binary_shaders_geotest_geom_start, &_binary_shaders_geotest_geom_end - &_binary_shaders_geotest_geom_start),
-	    std::string(&_binary_shaders_geotest_frag_start, &_binary_shaders_geotest_frag_end - &_binary_shaders_geotest_frag_start)
+		std::string(LDVAR(shaders_geotest_vert), LDLEN(shaders_geotest_vert)),
+		std::string(LDVAR(shaders_geotest_geom), LDLEN(shaders_geotest_geom)),
+	    std::string(LDVAR(shaders_geotest_frag), LDLEN(shaders_geotest_frag))
 	);
 
 	Element e(const_cast<GLfloat*>(&vertices[0]), const_cast<GLint*>(&indices[0]), sizeof(GLfloat)*20, sizeof(GLint)*4, TWOD_COLORED_POINT_ATTR);

@@ -45,8 +45,9 @@ void main() {
     vec4 diffuse = diffuseT * d * vec4(light.diffuse,1.0f);
     //specular
     vec3 viewDir = normalize(viewPos - Pos);
-    vec3 reflectDir = reflect(lightDir,-viewDir);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shiness);
+    vec3 halfDir = normalize(-lightDir + viewDir);
+    //vec3 reflectDir = reflect(lightDir,normal);
+    float spec = pow(max(dot(viewDir, halfDir), 0.0), material.shiness);
     vec4 specular = spec * specularT * vec4(light.specular,1.0f);
     
     fragColor = specular + diffuse + ambient;

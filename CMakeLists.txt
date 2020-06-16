@@ -1,9 +1,18 @@
 cmake_minimum_required (VERSION 3.3)
 project(glTemplate)
+include(CMakeOptions.txt)
 
 find_package(OpenGL REQUIRED)
 
-option(TIDE_DEMO "compile examples" OFF)
+add_custom_target(rscembedding
+    DEPENDS ${PROJECT_BINARY_DIR}/bin2c)
+ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/bin2c
+  COMMAND gcc -o ${PROJECT_BINARY_DIR}/bin2c external/bin2c/bin2c.c
+  DEPENDS external/bin2c/bin2c.c
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  COMMENT "Building bin2c"
+  VERBATIM
+)
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -72,8 +81,8 @@ FUNCTION(ADD_RESOURCES out_var)
   SET(result)
   FOREACH(in_f ${ARGN})
     FILE(RELATIVE_PATH src_f ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${in_f})
-    SET(out_f "${PROJECT_BINARY_DIR}/${in_f}.o")
     if(NOT APPLE)
+        SET(out_f "${PROJECT_BINARY_DIR}/${in_f}.o")
         ADD_CUSTOM_COMMAND(OUTPUT ${out_f}
           COMMAND ld -r -b binary -o ${out_f} ${src_f}
           DEPENDS ${in_f}
@@ -82,9 +91,20 @@ FUNCTION(ADD_RESOURCES out_var)
           VERBATIM
           )
     else()
-        ADD_CUSTOM_COMMAND(OUTPUT ${out_f}
-          COMMAND /usr/local/opt/binutils/bin/gobjcopy -I binary -O mach-o-x86-64 -B i386:x86-64 ${src_f} ${out_f}
+        SET(out_f "${PROJECT_BINARY_DIR}/${in_f}.o")
+        SET(c_f "${PROJECT_BINARY_DIR}/${in_f}.c")
+        string(REPLACE "/" "_" tmp ${in_f})
+        string(REPLACE "." "_" out_name ${tmp})
+        ADD_CUSTOM_COMMAND(OUTPUT ${c_f}
+          COMMAND ${PROJECT_BINARY_DIR}/bin2c ${src_f} ${c_f} ${out_name}
           DEPENDS ${in_f}
+          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+          COMMENT "Building object ${c_f}"
+          VERBATIM
+          )
+        ADD_CUSTOM_COMMAND(OUTPUT ${out_f}
+          COMMAND gcc -c ${c_f} -o ${out_f}
+          DEPENDS ${c_f}
           WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
           COMMENT "Building object ${out_f}"
           VERBATIM
@@ -121,6 +141,7 @@ if(TIDE_DEMO)
     ${ALL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
   )
+  add_dependencies(a rscembedding)
 
   ADD_RESOURCES(GEOMETRY_RES
       shaders/geotest.vert
@@ -135,6 +156,7 @@ if(TIDE_DEMO)
     ${ALL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
   )
+  add_dependencies(geometry rscembedding)
 
   ADD_RESOURCES(POSTPROCESS_RES
       shaders/tex.vert
@@ -155,6 +177,7 @@ if(TIDE_DEMO)
     ${ALL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
   )
+  add_dependencies(postprocess rscembedding)
 
   ADD_RESOURCES(NORMAL_RES
       shaders/shade.vert
@@ -176,4 +199,19 @@ if(TIDE_DEMO)
     ${ALL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
   )
+  add_dependencies(normal rscembedding)
+
+  ADD_RESOURCES(CUBE_RES
+      
+  )
+  add_executable(cubemap 
+      main/cubemap.cpp
+      ${CPP_FILES}
+      ${CUBE_RES}
+  )
+  target_link_libraries(cubemap
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+  add_dependencies(cubemap rscembedding)
 endif(TIDE_DEMO)

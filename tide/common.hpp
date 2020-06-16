@@ -8,13 +8,13 @@
 
 #define PI 3.1415926f
 
-//#ifdef __APPLE__
-//#include <mach-o/getsect.h>
-//#define EXTLD(NAME) \
-//  extern const char _section$__DATA__ ## NAME 
-//#define LDVAR(NAME) (&_section$__DATA__ ## NAME )
-//#define LDLEN(NAME) (getsectiondata("__DATA", "__" #NAME)->size)
-//#else /* gnu/linux ld */
+#ifdef __APPLE__
+#define EXTLD(NAME) \
+  extern const char NAME ; \
+  extern const int NAME ## _length
+#define LDVAR(NAME) (& NAME )
+#define LDLEN(NAME) (NAME ## _length)
+#else /* gnu/linux ld */
 #define EXTLD(NAME) \
   extern const char _binary_ ## NAME ## _start; \
   extern const char _binary_ ## NAME ## _end
@@ -22,7 +22,7 @@
   (&_binary_ ## NAME ## _start)
 #define LDLEN(NAME) \
   ((&(_binary_ ## NAME ## _end) - &(_binary_ ## NAME ## _start)) * sizeof(char))
-//#endif
+#endif
 
 namespace tide
 {

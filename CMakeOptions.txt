@@ -1,0 +1,1 @@
+option(TIDE_DEMO "compile examples" ON)

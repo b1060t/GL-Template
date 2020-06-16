@@ -17,3 +17,6 @@
 [submodule "external/imgui"]
 	path = external/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "external/bin2c"]
+	path = external/bin2c
+	url = https://github.com/gwilymk/bin2c.git

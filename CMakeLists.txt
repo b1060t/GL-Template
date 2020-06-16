@@ -133,7 +133,7 @@ if(TIDE_DEMO)
       misc/normal.png
   )
   add_executable(a 
-      main/test.cpp
+      example/test.cpp
       ${CPP_FILES}
       ${A_RES}
   )
@@ -149,7 +149,7 @@ if(TIDE_DEMO)
       shaders/geotest.frag
   )
   add_executable(geometry 
-      main/geometry.cpp
+      example/geometry.cpp
       ${GEOMETRY_RES}
   )
   target_link_libraries(geometry
@@ -170,7 +170,7 @@ if(TIDE_DEMO)
       shaders/guided.frag
   )
   add_executable(postprocess 
-      main/postprocess.cpp
+      example/postprocess.cpp
       ${POSTPROCESS_RES}
   )
   target_link_libraries(postprocess
@@ -191,7 +191,7 @@ if(TIDE_DEMO)
       misc/normal.png
   )
   add_executable(normal 
-      main/normalvisualize.cpp
+      example/normalvisualize.cpp
       ${CPP_FILES}
       ${NORMAL_RES}
   )
@@ -205,7 +205,7 @@ if(TIDE_DEMO)
       
   )
   add_executable(cubemap 
-      main/cubemap.cpp
+      example/cubemap.cpp
       ${CPP_FILES}
       ${CUBE_RES}
   )

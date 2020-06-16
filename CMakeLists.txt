@@ -3,6 +3,8 @@ project(glTemplate)
 
 find_package(OpenGL REQUIRED)
 
+option(TIDE_DEMO "compile examples" OFF)
+
 set(CMAKE_CXX_STANDARD 14)
 
 macro(get_WIN32_WINNT version)
@@ -98,78 +100,80 @@ FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/misc)
 
 find_package(Threads)
 
-ADD_RESOURCES(A_RES
-    shaders/outline.frag
-    shaders/shade.vert
-    shaders/shade.frag
-    shaders/tex.vert
-    shaders/tex.frag
-    misc/a.obj
-    misc/diffuse.jpg
-    misc/specular.jpg
-    misc/normal.png
-)
-add_executable(a 
-    main/test.cpp
-    ${CPP_FILES}
-    ${A_RES}
-)
-target_link_libraries(a
-  ${ALL_LIBS}
-  ${CMAKE_THREAD_LIBS_INIT}
-)
+if(TIDE_DEMO)
+  ADD_RESOURCES(A_RES
+      shaders/outline.frag
+      shaders/shade.vert
+      shaders/shade.frag
+      shaders/tex.vert
+      shaders/tex.frag
+      misc/a.obj
+      misc/diffuse.jpg
+      misc/specular.jpg
+      misc/normal.png
+  )
+  add_executable(a 
+      main/test.cpp
+      ${CPP_FILES}
+      ${A_RES}
+  )
+  target_link_libraries(a
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
 
-ADD_RESOURCES(GEOMETRY_RES
-    shaders/geotest.vert
-    shaders/geotest.geom
-    shaders/geotest.frag
-)
-add_executable(geometry 
-    main/geometry.cpp
-    ${GEOMETRY_RES}
-)
-target_link_libraries(geometry
-  ${ALL_LIBS}
-  ${CMAKE_THREAD_LIBS_INIT}
-)
+  ADD_RESOURCES(GEOMETRY_RES
+      shaders/geotest.vert
+      shaders/geotest.geom
+      shaders/geotest.frag
+  )
+  add_executable(geometry 
+      main/geometry.cpp
+      ${GEOMETRY_RES}
+  )
+  target_link_libraries(geometry
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
 
-ADD_RESOURCES(POSTPROCESS_RES
-    shaders/tex.vert
-    shaders/tex.frag
-    misc/postprocess.jpg
-    misc/guided.png
-    shaders/mean.frag
-    shaders/corr.frag
-    shaders/alpha.frag
-    shaders/beta.frag
-    shaders/guided.frag
-)
-add_executable(postprocess 
-    main/postprocess.cpp
-    ${POSTPROCESS_RES}
-)
-target_link_libraries(postprocess
-  ${ALL_LIBS}
-  ${CMAKE_THREAD_LIBS_INIT}
-)
+  ADD_RESOURCES(POSTPROCESS_RES
+      shaders/tex.vert
+      shaders/tex.frag
+      misc/postprocess.jpg
+      misc/guided.png
+      shaders/mean.frag
+      shaders/corr.frag
+      shaders/alpha.frag
+      shaders/beta.frag
+      shaders/guided.frag
+  )
+  add_executable(postprocess 
+      main/postprocess.cpp
+      ${POSTPROCESS_RES}
+  )
+  target_link_libraries(postprocess
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
 
-ADD_RESOURCES(NORMAL_RES
-    shaders/shade.vert
-    shaders/shade.frag
-    shaders/normal.vert
-    shaders/normal.geom
-    shaders/normal.frag
-    misc/a.obj
-    misc/diffuse.jpg
-    misc/specular.jpg
-    misc/normal.png
-)
-add_executable(normal 
-    main/normalvisualize.cpp
-    ${CPP_FILES}
-    ${NORMAL_RES}
-)
-target_link_libraries(normal
-  ${ALL_LIBS}
-  ${CMAKE_THREAD_LIBS_INIT}
-)
+  ADD_RESOURCES(NORMAL_RES
+      shaders/shade.vert
+      shaders/shade.frag
+      shaders/normal.vert
+      shaders/normal.geom
+      shaders/normal.frag
+      misc/a.obj
+      misc/diffuse.jpg
+      misc/specular.jpg
+      misc/normal.png
+  )
+  add_executable(normal 
+      main/normalvisualize.cpp
+      ${CPP_FILES}
+      ${NORMAL_RES}
+  )
+  target_link_libraries(normal
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+endif(TIDE_DEMO)

@@ -14,7 +14,6 @@ jobs:
         brew install ninja
         brew install binutils
         export PATH="/usr/local/opt/binutils/bin:$PATH"
-        /usr/local/opt/binutils/bin/gobjcopy --info
     - name: download submodule
       run: git submodule update --init
     - name: cmake configure
@@ -23,7 +22,5 @@ jobs:
         cd build
         cmake ..
     - name: build
-      run: |
-        cmake --build .
-        nm shaders/normal.frag.o
+      run: cmake --build .
       working-directory: build

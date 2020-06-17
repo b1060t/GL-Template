@@ -1,0 +1,113 @@
+#Demos
+if(TIDE_DEMO)
+  ADD_RESOURCES(A_RES
+      shaders/outline.frag
+      shaders/shade.vert
+      shaders/shade.frag
+      shaders/tex.vert
+      shaders/tex.frag
+      misc/a.obj
+      misc/diffuse.jpg
+      misc/specular.jpg
+      misc/normal.png
+  )
+  add_executable(a 
+      example/test.cpp
+      ${CPP_FILES}
+      ${A_RES}
+  )
+  target_link_libraries(a
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+  add_dependencies(a rscembedding)
+
+  ADD_RESOURCES(GEOMETRY_RES
+      shaders/geotest.vert
+      shaders/geotest.geom
+      shaders/geotest.frag
+  )
+  add_executable(geometry 
+      example/geometry.cpp
+      ${GEOMETRY_RES}
+  )
+  target_link_libraries(geometry
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+  add_dependencies(geometry rscembedding)
+
+  ADD_RESOURCES(POSTPROCESS_RES
+      shaders/tex.vert
+      shaders/tex.frag
+      misc/postprocess.jpg
+      misc/guided.png
+      shaders/mean.frag
+      shaders/corr.frag
+      shaders/alpha.frag
+      shaders/beta.frag
+      shaders/guided.frag
+  )
+  add_executable(postprocess 
+      example/postprocess.cpp
+      ${POSTPROCESS_RES}
+  )
+  target_link_libraries(postprocess
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+  add_dependencies(postprocess rscembedding)
+
+  ADD_RESOURCES(NORMAL_RES
+      shaders/shade.vert
+      shaders/shade.frag
+      shaders/normal.vert
+      shaders/normal.geom
+      shaders/normal.frag
+      misc/a.obj
+      misc/diffuse.jpg
+      misc/specular.jpg
+      misc/normal.png
+  )
+  add_executable(normal 
+      example/normalvisualize.cpp
+      ${CPP_FILES}
+      ${NORMAL_RES}
+  )
+  target_link_libraries(normal
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+  add_dependencies(normal rscembedding)
+
+  ADD_RESOURCES(CUBE_RES
+      
+  )
+  add_executable(cubemap 
+      example/cubemap.cpp
+      ${CPP_FILES}
+      ${CUBE_RES}
+  )
+  target_link_libraries(cubemap
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+  add_dependencies(cubemap rscembedding)
+endif(TIDE_DEMO)
+
+#参照下方格式添加
+#ADD_RESOURCES(XXX_RES
+#    打包至可执行文件中的资源文件
+#)
+#include_directories(
+#    项目头文件
+#)
+#add_executable(xxx 
+#    项目cpp文件
+#    ${XXX_RES}
+#)
+#target_link_libraries(xxx
+#  ${ALL_LIBS}
+#  ${CMAKE_THREAD_LIBS_INIT}
+#)
+#add_dependencies(xxx rscembedding)

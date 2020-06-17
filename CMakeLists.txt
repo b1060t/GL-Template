@@ -31,8 +31,13 @@ endif(NOT MSVC)
 
 add_subdirectory(external)
 
+if(NOT TIDE_EXCLUDE)
+    include_directories(
+        tide/
+    )
+endif()
+
 include_directories(
-    tide/
     external/glfw/include/
     external/glew/include/
     external/glm

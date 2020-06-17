@@ -33,17 +33,15 @@
 using namespace glm;
 using namespace tide;
 
-extern "C" {
-    EXTLD(shaders_shade_vert);
-    EXTLD(shaders_shade_frag);
-    EXTLD(shaders_tex_vert);
-    EXTLD(shaders_tex_frag);
-    EXTLD(shaders_outline_frag);
-    EXTLD(misc_diffuse_jpg);
-    EXTLD(misc_specular_jpg);
-    EXTLD(misc_normal_png);
-    EXTLD(misc_a_obj);
-}
+EXTLD(shaders_shade_vert);
+EXTLD(shaders_shade_frag);
+EXTLD(shaders_tex_vert);
+EXTLD(shaders_tex_frag);
+EXTLD(shaders_outline_frag);
+EXTLD(misc_diffuse_jpg);
+EXTLD(misc_specular_jpg);
+EXTLD(misc_normal_png);
+EXTLD(misc_a_obj);
 
 GLfloat vertices[] = {
     // positions   // texCoords
@@ -119,13 +117,9 @@ int main( void )
 	e.addTexture("material.specular", specular);
 	e.addTexture("material.normal", normal);
 	e.addFloatUniform("material.shiness", 32.0f);
-	e.addVec3Uniform("light.pos", glm::vec3(1.0f,0.0f,0.0f));
 	e.addVec3Uniform("light.diffuse", glm::vec3(0.7f));
 	e.addVec3Uniform("light.ambient", glm::vec3(0.2f));
 	e.addVec3Uniform("light.specular", glm::vec3(1.0f));
-	e.addMat4Uniform("View", glm::mat4(1.0f));
-	e.addMat4Uniform("Projection", glm::mat4(1.0f));
-	e.addVec3Uniform("viewPos", glm::vec3(0.0f));
 
     Element o(sceneObjPtr, tide::THREED_OBJECT_ATTR);
 	o.attachShader(&outline_shader);
@@ -133,13 +127,9 @@ int main( void )
 	o.addTexture("material.specular", specular);
 	o.addTexture("material.normal", normal);
 	o.addFloatUniform("material.shiness", 32.0f);
-	o.addVec3Uniform("light.pos", glm::vec3(1.0f,0.0f,0.0f));
 	o.addVec3Uniform("light.diffuse", glm::vec3(0.7f));
 	o.addVec3Uniform("light.ambient", glm::vec3(0.2f));
 	o.addVec3Uniform("light.specular", glm::vec3(1.0f));
-	o.addMat4Uniform("View", glm::mat4(1.0f));
-	o.addMat4Uniform("Projection", glm::mat4(1.0f));
-	o.addVec3Uniform("viewPos", glm::vec3(0.0f));
 
     Element t(const_cast<GLfloat*>(&ImageVertices[0]), const_cast<GLint*>(&indices[0]), 16*sizeof(GLfloat), 6*sizeof(GLint), tide::TWOD_TEXTURE_ATTR);
     t.attachShader(&tex_shader);

@@ -32,11 +32,9 @@
 using namespace glm;
 using namespace tide;
 
-extern "C" {
-    EXTLD(shaders_geotest_vert);
-    EXTLD(shaders_geotest_frag);
-    EXTLD(shaders_geotest_geom);
-}
+EXTLD(shaders_geotest_vert);
+EXTLD(shaders_geotest_frag);
+EXTLD(shaders_geotest_geom);
 
 const GLfloat vertices[] = {
 	-0.5f,  0.5f, 1.0f, 0.0f, 0.0f,

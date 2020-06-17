@@ -36,18 +36,15 @@
 using namespace glm;
 using namespace tide;
 
-extern "C"
-{
-	EXTLD(shaders_shade_vert);
-    EXTLD(shaders_shade_frag);
-    EXTLD(shaders_normal_vert);
-    EXTLD(shaders_normal_geom);
-    EXTLD(shaders_normal_frag);
-	EXTLD(misc_diffuse_jpg);
-    EXTLD(misc_specular_jpg);
-    EXTLD(misc_normal_png);
-    EXTLD(misc_a_obj);
-}
+EXTLD(shaders_shade_vert);
+EXTLD(shaders_shade_frag);
+EXTLD(shaders_normal_vert);
+EXTLD(shaders_normal_geom);
+EXTLD(shaders_normal_frag);
+EXTLD(misc_diffuse_jpg);
+EXTLD(misc_specular_jpg);
+EXTLD(misc_normal_png);
+EXTLD(misc_a_obj);
 
 int main()
 {
@@ -100,9 +97,6 @@ int main()
 	e.addVec3Uniform("light.diffuse", glm::vec3(0.7f));
 	e.addVec3Uniform("light.ambient", glm::vec3(0.2f));
 	e.addVec3Uniform("light.specular", glm::vec3(1.0f));
-	e.addMat4Uniform("View", glm::mat4(1.0f));
-	e.addMat4Uniform("Projection", glm::mat4(1.0f));
-	e.addVec3Uniform("viewPos", glm::vec3(0.0f));
 	e.internal_model = true;
     e.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
     e.setScale(glm::vec3(0.8f));

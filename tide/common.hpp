@@ -10,14 +10,14 @@
 
 #ifdef __APPLE__
 #define EXTLD(NAME) \
-  extern const char NAME ; \
-  extern const int NAME ## _length
+  extern "C" const char NAME ; \
+  extern "C" const int NAME ## _length
 #define LDVAR(NAME) (& NAME )
 #define LDLEN(NAME) (NAME ## _length)
 #else /* gnu/linux ld */
 #define EXTLD(NAME) \
-  extern const char _binary_ ## NAME ## _start; \
-  extern const char _binary_ ## NAME ## _end
+  extern "C" const char _binary_ ## NAME ## _start; \
+  extern "C" const char _binary_ ## NAME ## _end
 #define LDVAR(NAME) \
   (&_binary_ ## NAME ## _start)
 #define LDLEN(NAME) \
@@ -43,6 +43,9 @@ namespace tide
         {2, GL_FLOAT, GL_FALSE, 5, 0}, //position x,y
         {3, GL_FLOAT, GL_FALSE, 5, 2}, //color r,g,b
     };
+    static const std::vector<Attr> SKYBOX_ATTR = {
+        {3, GL_FLOAT, GL_FALSE, 3, 0}, //position x,y,z
+    };
 
     static const GLfloat ImageVertices[] = {
         // positions   // texCoords
@@ -54,6 +57,52 @@ namespace tide
     static const GLint ImageIndices[] {
         0, 1, 2,
         0, 2, 3
+    };
+    static const GLfloat CubeVertices[] = {
+        // positions          // texCoords
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f
+    };
+    static const GLint CubeIndices[] {
+         0,  1,  2,  2,  3,  0,
+         4,  5,  6,  6,  7,  4,
+         8,  9, 10, 10,  4,  8,
+        11,  2, 12, 12, 13, 11,
+        10, 14,  5,  5,  4, 10,
+         3,  2, 11, 11, 15,  3
+    };
+    static const GLfloat SkyboxVertices[] = {
+        // positions          
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f
+    };
+    static const GLint SkyboxIndices[] {
+        0, 1, 2, 2, 3, 0,
+        4, 1, 0, 0, 5, 4,
+        2, 6, 7, 7, 3, 2,
+        4, 5, 7, 7, 6, 4,
+        0, 3, 7, 7, 5, 0,
+        1, 4, 2, 2, 4, 6
     };
 }
 

@@ -80,8 +80,16 @@ if(TIDE_DEMO)
   )
   add_dependencies(normal rscembedding)
 
+  FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/misc/skybox)
   ADD_RESOURCES(CUBE_RES
-      
+      misc/skybox/back.jpg
+      misc/skybox/bottom.jpg
+      misc/skybox/front.jpg
+      misc/skybox/left.jpg
+      misc/skybox/right.jpg
+      misc/skybox/top.jpg
+      shaders/skybox.vert
+      shaders/skybox.frag
   )
   add_executable(cubemap 
       example/cubemap.cpp

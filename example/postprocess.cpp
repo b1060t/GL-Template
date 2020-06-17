@@ -26,17 +26,15 @@
 using namespace glm;
 using namespace tide;
 
-extern "C" {
-    EXTLD(shaders_tex_vert);
-    EXTLD(shaders_tex_frag);
-    EXTLD(shaders_mean_frag);
-    EXTLD(shaders_corr_frag);
-    EXTLD(shaders_alpha_frag);
-    EXTLD(shaders_beta_frag);
-    EXTLD(shaders_guided_frag);
-    EXTLD(misc_postprocess_jpg);
-    EXTLD(misc_guided_png);
-}
+EXTLD(shaders_tex_vert);
+EXTLD(shaders_tex_frag);
+EXTLD(shaders_mean_frag);
+EXTLD(shaders_corr_frag);
+EXTLD(shaders_alpha_frag);
+EXTLD(shaders_beta_frag);
+EXTLD(shaders_guided_frag);
+EXTLD(misc_postprocess_jpg);
+EXTLD(misc_guided_png);
 
 int main()
 {

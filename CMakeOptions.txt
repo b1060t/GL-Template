@@ -1,1 +1,2 @@
 option(TIDE_DEMO "compile examples" ON)
+option(TIDE_EXCLUDE "exclude tide framework" OFF)

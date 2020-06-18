@@ -50,13 +50,14 @@ namespace tide
         }
         void bind()
         {
+            int num = _tex.size();
             glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
-            GLenum buffers[_tex.size()];
-            for(int i = 0; i < _tex.size(); i++)
+            std::vector<GLenum> buffers;
+            for(int i = 0; i < num; i++)
             {
-                buffers[i] = GL_COLOR_ATTACHMENT0 + i;
+                buffers.push_back(GL_COLOR_ATTACHMENT0 + i);
             }
-            glDrawBuffers(_tex.size(), buffers);
+            glDrawBuffers(num, &buffers[0]);
         }
         void unbind()
         {

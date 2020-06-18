@@ -9,7 +9,7 @@ namespace tide
     {
     private:
         GLuint _fbo;
-        GLuint _tex;
+        std::vector<GLuint> _tex;
         GLuint _rbo;
 
         double _width;
@@ -18,18 +18,24 @@ namespace tide
         std::vector<Element> _elements;
         
     public:
-        Frame(double width, double height)
+        Frame(double width, double height, int attachmentNum=1)
             :_width(width),
             _height(height)
         {
             glGenFramebuffers(1, &_fbo);
             glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
-            glGenTextures(1, &_tex);
-            glBindTexture(GL_TEXTURE_2D, _tex);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _tex, 0);
+            for(int i = 0; i < attachmentNum; i++)
+            {
+                GLuint t;
+                glGenTextures(1, &t);
+                glBindTexture(GL_TEXTURE_2D, t);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+i, GL_TEXTURE_2D, t, 0);
+                _tex.push_back(t);
+            }
+            
             glGenRenderbuffers(1, &_rbo);
             glBindRenderbuffer(GL_RENDERBUFFER, _rbo); 
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, _width, _height);  
@@ -40,19 +46,25 @@ namespace tide
         }
         ~Frame()
         {
-            
+            glDeleteTextures(_tex.size(), &_tex[0]);
         }
         void bind()
         {
             glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+            GLenum buffers[_tex.size()];
+            for(int i = 0; i < _tex.size(); i++)
+            {
+                buffers[i] = GL_COLOR_ATTACHMENT0 + i;
+            }
+            glDrawBuffers(_tex.size(), buffers);
         }
         void unbind()
         {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
-        GLuint getTex()
+        GLuint getTex(int index=0)
         {
-            return _tex;
+            return _tex[index];
         }
     };
 }

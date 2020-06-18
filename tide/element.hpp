@@ -35,6 +35,8 @@ namespace tide
         GLint _vert_num;
         GLint _attr_num;
 
+        GLbitfield _clear_flag;
+
         glm::vec3 _pos = glm::vec3(0.0f);
         glm::vec3 _scale = glm::vec3(1.0f);
         glm::vec3 _rot = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -45,6 +47,7 @@ namespace tide
         std::map<std::string, glm::mat4> mat4dic;
         std::map<std::string, GLuint> texdic;
         std::map<std::string, GLfloat> floatdic;
+        std::map<std::string, GLint> intdic;
 
         GLboolean internal_model = true;
     
@@ -173,6 +176,10 @@ namespace tide
             glDeleteBuffers(1, &_buffer_handle);
             glDeleteBuffers(1, &_ibo);
             glDeleteVertexArrays(1, &_vao);
+            for(auto t : texdic)
+            {
+                glDeleteTextures(1, &t.second);
+            }
         }
     
         void addVec3Uniform(const std::string &name, glm::vec3 value)
@@ -186,6 +193,15 @@ namespace tide
         void addFloatUniform(const std::string &name, GLfloat value)
         {
             floatdic.insert(std::pair<std::string, GLfloat>(name, value));
+        }
+        void addIntUniform(const std::string &name, GLint value)
+        {
+            intdic.insert(std::pair<std::string, GLint>(name, value));
+        }
+
+        void setClearFlag(GLbitfield flag)
+        {
+            _clear_flag = flag;
         }
     
         void initialzeVAO()
@@ -212,6 +228,8 @@ namespace tide
         }
         void render(GLenum mode=GL_TRIANGLES)
         {
+            if(_clear_flag) glClear(_clear_flag);
+
             _shader->use();
 
             int texcount = 0;
@@ -234,6 +252,10 @@ namespace tide
             for(auto v : floatdic)
             {
                 _shader->setFloat(v.first, v.second);
+            }
+            for(auto v : intdic)
+            {
+                _shader->setInt(v.first, v.second);
             }
 
             if(internal_model)

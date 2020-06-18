@@ -56,7 +56,6 @@ GLuint LoadShaders(std::string vertex_file,std::string fragment_file)
 
 
 	// Link the program
-	printf("Linking program\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);
 	glAttachShader(ProgramID, FragmentShaderID);
@@ -136,7 +135,6 @@ GLuint LoadShaders(std::string vertex_file,std::string geometry_file,std::string
 
 
 	// Link the program
-	printf("Linking program\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);
 	glAttachShader(ProgramID, GeometryShaderID);
@@ -232,7 +230,6 @@ GLuint LoadExternalShaders(const char * vertex_file_path,const char * fragment_f
 
 
 	// Link the program
-	printf("Linking program\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);
 	glAttachShader(ProgramID, FragmentShaderID);
@@ -353,7 +350,6 @@ GLuint LoadExternalShaders(const char * vertex_file_path,const char * geometry_f
 
 
 	// Link the program
-	printf("Linking program\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);
 	glAttachShader(ProgramID, GeometryShaderID);

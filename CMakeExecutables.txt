@@ -101,6 +101,22 @@ if(TIDE_DEMO)
     ${CMAKE_THREAD_LIBS_INIT}
   )
   add_dependencies(cubemap rscembedding)
+  ADD_RESOURCES(DEFOG_RES
+      shaders/defog.vert
+      shaders/defog.frag
+      shaders/tex.vert
+      shaders/tex.frag
+      misc/defog.jpg
+  )
+  add_executable(defog 
+      example/defog.cpp
+      ${DEFOG_RES}
+  )
+  target_link_libraries(defog
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+  add_dependencies(defog rscembedding)
 endif(TIDE_DEMO)
 
 #参照下方格式添加

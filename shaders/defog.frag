@@ -118,7 +118,7 @@ vec3[2] calab(sampler2D I, sampler2D P)
 
     vec3 a = covIP / (varI + 0.01);
     vec3 b = mP - a * mI;
-    vec3 o[2] = {a, b};
+    vec3 o[2] = vec3[](a, b);
     return o;
 }
 

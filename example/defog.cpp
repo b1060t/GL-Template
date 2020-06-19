@@ -57,13 +57,13 @@ int main()
 	    std::string(LDVAR(shaders_tex_frag), LDLEN(shaders_tex_frag))
 	);
 
-    Frame fbo(img_tex.width, img_tex.height, 2);
+    Frame fbo(img_tex.width, img_tex.height, FRAME_ATTACHMENTS_2COLOR);
 
     tide::Element guided(const_cast<GLfloat*>(&ImageVertices[0]), const_cast<GLint*>(&ImageIndices[0]), 16*sizeof(GLfloat), 6*sizeof(GLint), tide::TWOD_TEXTURE_ATTR);
     guided.attachShader(&defog_shader);
     guided.setClearFlag(GL_COLOR_BUFFER_BIT);
 
-    Frame fbo1(img_tex.width, img_tex.height, 2);
+    Frame fbo1(img_tex.width, img_tex.height, FRAME_ATTACHMENTS_2COLOR);
     guided.texdic["I"]=img;
     guided.floatdic["width"]=img_tex.width;
     guided.floatdic["height"]=img_tex.height;
@@ -72,7 +72,7 @@ int main()
     guided.render();
     fbo1.unbind();
 
-    Frame fbo2(img_tex.width, img_tex.height, 2);
+    Frame fbo2(img_tex.width, img_tex.height, FRAME_ATTACHMENTS_2COLOR);
     guided.texdic["I"]=fbo1.getTex(0);
     guided.texdic["P"]=img;
     guided.internal_model = false;
@@ -81,7 +81,7 @@ int main()
     guided.render();
     fbo2.unbind();
 
-    Frame fbo3(img_tex.width, img_tex.height, 2);
+    Frame fbo3(img_tex.width, img_tex.height, FRAME_ATTACHMENTS_2COLOR);
     guided.texdic["a"]=fbo2.getTex(0);
     guided.texdic["b"]=fbo2.getTex(1);
     guided.texdic["I"]=fbo1.getTex(0);

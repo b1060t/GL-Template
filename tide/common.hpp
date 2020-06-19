@@ -47,6 +47,17 @@ namespace tide
         {3, GL_FLOAT, GL_FALSE, 3, 0}, //position x,y,z
     };
 
+    static const std::vector<GLuint> FRAME_ATTACHMENTS_2COLOR = 
+    {
+        GL_COLOR_ATTACHMENT0,
+        GL_COLOR_ATTACHMENT1
+    };
+
+    static const std::vector<GLuint> FRAME_ATTACHMENTS_1DEPTH = 
+    {
+        GL_DEPTH_ATTACHMENT
+    };
+
     static const GLfloat ImageVertices[] = {
         // positions   // texCoords
         -1.0f,  1.0f,  0.0f, 1.0f,

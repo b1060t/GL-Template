@@ -125,4 +125,5 @@ FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/misc)
 
 find_package(Threads)
 
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 include(CMakeExecutables.txt)

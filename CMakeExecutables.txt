@@ -101,6 +101,7 @@ if(TIDE_DEMO)
     ${CMAKE_THREAD_LIBS_INIT}
   )
   add_dependencies(cubemap rscembedding)
+
   ADD_RESOURCES(DEFOG_RES
       shaders/defog.vert
       shaders/defog.frag

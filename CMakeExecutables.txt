@@ -26,6 +26,9 @@ if(TIDE_DEMO)
       shaders/geotest.vert
       shaders/geotest.geom
       shaders/geotest.frag
+      shaders/circle.vert
+      shaders/circle.geom
+      shaders/circle.frag
   )
   add_executable(geometry 
       example/geometry.cpp

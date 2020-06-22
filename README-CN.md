@@ -1,14 +1,14 @@
 # OpenGL Template
 
-English | [中文](README-CN.md)
+[English](README.md) | 中文
 
 ![Linux](https://github.com/Biobots/GL-Template/workflows/Linux/badge.svg) ![Windows](https://github.com/Biobots/GL-Template/workflows/Windows/badge.svg) ![OSX](https://github.com/Biobots/GL-Template/workflows/OSX/badge.svg)
 
-A simple OpenGL application template aiming at reducing the procedures of varied configurations on different platforms with the help of CMake. Some OpenGL functions are also packaged for reference(Under development). An additional function is also provided to embed resource files such as images, shaders into a single executable file.
+一个没有其他外部依赖的OpenGL程序模板。起因是在不同平台重复配置相关依赖项过于繁琐，故使用CMake创建了一个多平台可用的模板，并对部分常用功能进行了封装。同时实现了简单的将图片、shader等资源嵌入可执行程序的功能。
 
-Examples can be found in `./example`.
+具体使用可以参考`./example`目录下的相关例子。
 
-## Build
+## 编译
 
 ### Windows(Mingw)
 
@@ -20,11 +20,11 @@ cmake .. -G "MinGW Makefiles"
 make
 ```
 
-### Windows(Visual Studio 2017 or higher)
+### Windows(Visual Studio 2017及以上)
 
-1. `Files`->`Open`->`CMake`, choose CMakeLists.txt in the root directory of this project.
+1. 选择菜单`文件`->`打开`->`CMake`，选择项目根目录的CMakeLists.txt，等待文件索引完成。
 
-2. `CMake`->`Generate all`
+2. 选择菜单`CMake`->`全部生成`
 
 ### Linux
 
@@ -46,8 +46,10 @@ cmake ..
 make
 ```
 
+github action编译可以通过，但由于没有相关设备，未经过实机测试。
+(Update: 经测试可以正常运行)
 
-## 3rd-party libraries
+## 第三方库
 
 1. [assimp](https://github.com/assimp/assimp): The official Open-Asset-Importer-Library Repository.
 
@@ -63,13 +65,13 @@ make
 
 7. [mango](https://github.com/t0rakka/mango): A multi-platform low-level development framework for graphics programmers.
 
-## Related Documents
+## 相关文档
 
 1. [Quaternion proof](http://graphics.stanford.edu/courses/cs348a-17-winter/Papers/quaternion.pdf)
 
 2. [What are the different texture maps for](https://help.poliigon.com/en/articles/1712652-what-are-the-different-texture-maps-for)
 
-## Screenshots
+## 截图
 
 ![Shade](screenshots/shade.png)
 

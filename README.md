@@ -77,4 +77,4 @@ make
 
 ![Guided filter](screenshots/guidedfilter.png)
 
-![Geometry](screenshots/geometry.png)
+![Imgui](screenshots/geometrywithimgui.png)

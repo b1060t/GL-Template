@@ -20,12 +20,23 @@ set(OPENGL_LIBRARY
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 
-set(GLEW_SOURCE glew/src/glew.c)
-add_library( GLEW STATIC
-	${GLEW_SOURCE}
-	${GLEW_INCLUDE}
+ADD_DEFINITIONS(-DGLEW_STATIC)
+set(GLEW_SRC
+	glew/src/glew.c
+	glew/src/glewinfo.c
+	glew/src/visualinfo.c
 )
-target_link_libraries(GLEW
+set(GLEW_INC
+	glew/include/GL/eglew.h
+	glew/include/GL/glew.h
+	glew/include/GL/glxew.h
+	glew/include/GL/wglew.h
+)
+add_library(glew STATIC
+	${GLEW_SRC}
+	${GLEW_INC}
+)
+target_link_libraries(glew
 	${OPENGL_LIBRARY}
 	${EXTRA_LIBS}
 )
@@ -53,8 +64,40 @@ ADD_DEFINITIONS(/permissive)
 else()
 ADD_DEFINITIONS(-fpermissive)
 endif(MSVC)
-include_directories(
-    mango/include/
-    mango/source/external/libwebp/
-)
 add_subdirectory(mango/build)
+
+#imgui
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+set(GLEW_INC_PATH
+	glew/include/GL
+)
+set(GLFW_INC_PATH
+	glfw/include
+	glfw/deps
+)
+set(IMGUI_INC
+	${IMGUI_DIR}
+	${IMGUI_DIR}/examples/
+	${IMGUI_DIR}/examples/example_glfw_opengl3
+	${GLEW_INC_PATH}
+	${GLFW_INC_PATH}
+	${OPENGL_INCLUDE_DIRS}
+)
+set(IMGUI_SRC
+	${IMGUI_DIR}/imgui.cpp
+	${IMGUI_DIR}/imgui_draw.cpp
+	${IMGUI_DIR}/imgui_demo.cpp
+	${IMGUI_DIR}/imgui_widgets.cpp
+	${IMGUI_DIR}/examples/imgui_impl_glfw.cpp
+	${IMGUI_DIR}/examples/imgui_impl_opengl3.cpp
+)
+add_library(imgui STATIC ${IMGUI_SRC} ${IMGUI_INC})
+target_include_directories(imgui PUBLIC
+	${IMGUI_DIR}
+	${IMGUI_DIR}/examples/
+	${IMGUI_DIR}/examples/example_glfw_opengl3
+	${GLEW_INC_PATH}
+	${GLFW_INC_PATH}
+	${OPENGL_INCLUDE_DIRS}
+)
+#target_link_libraries(imgui PUBLIC glew glfw ${OPENGL_LIBRARY} ${EXTRA_LIBS})

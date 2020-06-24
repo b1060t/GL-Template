@@ -43,31 +43,31 @@ include_directories(
     external/glm
     external/assimp/include/
     external/mango/include/
-) 
+    external/imgui/
+	  external/imgui/examples
+)
 
 if(APPLE)
     set(ALL_LIBS
         ${OPENGL_LIBRARY}
         glfw
-        GLEW
+        glew
         assimp
         mango-opengl
+        imgui
     )
 else()
     set(ALL_LIBS
         ${OPENGL_LIBRARY}
         glfw
-        GLEW
+        glew
         assimp
         mango-opengl
+        imgui
         -static-libgcc
         -static-libstdc++
     )
 endif(APPLE)
-
-set(CPP_FILES
-    
-)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set(CMAKE_EXE_LINKER_FLAGS " -static")
@@ -124,6 +124,10 @@ FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/shaders)
 FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/misc)
 
 find_package(Threads)
+
+set(CPP_FILES
+    ${imgui_cpp}
+)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 include(CMakeExecutables.txt)

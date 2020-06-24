@@ -32,6 +32,7 @@ if(TIDE_DEMO)
   )
   add_executable(geometry 
       example/geometry.cpp
+      ${CPP_FILES}
       ${GEOMETRY_RES}
   )
   target_link_libraries(geometry
@@ -53,6 +54,7 @@ if(TIDE_DEMO)
   )
   add_executable(postprocess 
       example/postprocess.cpp
+      ${CPP_FILES}
       ${POSTPROCESS_RES}
   )
   target_link_libraries(postprocess
@@ -114,6 +116,7 @@ if(TIDE_DEMO)
   )
   add_executable(defog 
       example/defog.cpp
+      ${CPP_FILES}
       ${DEFOG_RES}
   )
   target_link_libraries(defog

@@ -52,21 +52,52 @@ if(APPLE)
         ${OPENGL_LIBRARY}
         glfw
         glew
-        assimp
         mango-opengl
-        imgui
     )
+    if(TIDE_MANGO)
+      set(ALL_LIBS
+        ${ALL_LIBS}
+        mango-opengl
+      )
+    endif()
+    if(TIDE_ASSIMP)
+      set(ALL_LIBS
+        ${ALL_LIBS}
+        assimp
+      )
+    endif()
+    if(TIDE_IMGUI)
+      set(ALL_LIBS
+        ${ALL_LIBS}
+        imgui
+      )
+    endif()
 else()
     set(ALL_LIBS
         ${OPENGL_LIBRARY}
         glfw
         glew
-        assimp
-        mango-opengl
-        imgui
         -static-libgcc
         -static-libstdc++
     )
+    if(TIDE_MANGO)
+      set(ALL_LIBS
+        ${ALL_LIBS}
+        mango-opengl
+      )
+    endif()
+    if(TIDE_ASSIMP)
+      set(ALL_LIBS
+        ${ALL_LIBS}
+        assimp
+      )
+    endif()
+    if(TIDE_IMGUI)
+      set(ALL_LIBS
+        ${ALL_LIBS}
+        imgui
+      )
+    endif()
 endif(APPLE)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")

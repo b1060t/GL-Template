@@ -14,14 +14,6 @@
   extern "C" const int NAME ## _length
 #define LDVAR(NAME) (& NAME )
 #define LDLEN(NAME) (NAME ## _length)
-#elif (defined(_WIN32) && !defined(__WINPTHREADS_VERSION) && !defined(_MSC_VER))
-#define EXTLD(NAME) \
-  extern "C" const char binary_ ## NAME ## _start; \
-  extern "C" const char binary_ ## NAME ## _end
-#define LDVAR(NAME) \
-  (&binary_ ## NAME ## _start)
-#define LDLEN(NAME) \
-  ((&(binary_ ## NAME ## _end) - &(binary_ ## NAME ## _start)) * sizeof(char))
 #else /* gnu/linux ld */
 #define EXTLD(NAME) \
   extern "C" const char _binary_ ## NAME ## _start; \

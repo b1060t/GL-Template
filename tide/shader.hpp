@@ -15,11 +15,11 @@
 
 GLuint LoadShaders(std::string vertex_file,std::string fragment_file)
 {
-    // Create the shaders
+	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-    GLint Result = GL_FALSE;
+	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
 
@@ -81,7 +81,7 @@ GLuint LoadShaders(std::string vertex_file,std::string fragment_file)
 }
 GLuint LoadShaders(std::string vertex_file,std::string geometry_file,std::string fragment_file)
 {
-    // Create the shaders
+	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint GeometryShaderID = glCreateShader(GL_GEOMETRY_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -163,7 +163,7 @@ GLuint LoadShaders(std::string vertex_file,std::string geometry_file,std::string
 }
 GLuint LoadExternalShaders(const char * vertex_file_path,const char * fragment_file_path)
 {
-    // Create the shaders
+	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -255,7 +255,7 @@ GLuint LoadExternalShaders(const char * vertex_file_path,const char * fragment_f
 }
 GLuint LoadExternalShaders(const char * vertex_file_path,const char * geometry_file_path,const char * fragment_file_path)
 {
-    // Create the shaders
+	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint GeometryShaderID = glCreateShader(GL_GEOMETRY_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -365,11 +365,11 @@ GLuint LoadExternalShaders(const char * vertex_file_path,const char * geometry_f
 		printf("%s\n", &ProgramErrorMessage[0]);
 	}
 
-	
+
 	glDetachShader(ProgramID, VertexShaderID);
 	glDetachShader(ProgramID, GeometryShaderID);
 	glDetachShader(ProgramID, FragmentShaderID);
-	
+
 	glDeleteShader(VertexShaderID);
 	glDeleteShader(GeometryShaderID);
 	glDeleteShader(FragmentShaderID);
@@ -380,47 +380,52 @@ GLuint LoadExternalShaders(const char * vertex_file_path,const char * geometry_f
 class Shader
 {
 public:
-    GLuint handle;
-    Shader(std::string vertex_file,std::string fragment_file)
-    {
-        handle = LoadShaders(vertex_file, fragment_file);
-    }
+	GLuint handle;
+	Shader(std::string vertex_file,std::string fragment_file)
+	{
+		handle = LoadShaders(vertex_file, fragment_file);
+	}
 	Shader(std::string vertex_file,std::string geometry_file,std::string fragment_file)
-    {
-        handle = LoadShaders(vertex_file, geometry_file, fragment_file);
-    }
-    Shader(const char * vertex_file_path,const char * geometry_file_path,const char * fragment_file_path)
-    {
-        handle = LoadExternalShaders(vertex_file_path, geometry_file_path, fragment_file_path);
-    }
-    ~Shader()
-    {
-        glDeleteProgram(handle);
-    }
-    void use()
-    {
-        glUseProgram(handle);
-    }
-    void setBool(const std::string &name, bool value) const
-    {         
-        glUniform1i(glGetUniformLocation(handle, name.c_str()), (int)value); 
-    }
-    void setInt(const std::string &name, int value) const
-    { 
-        glUniform1i(glGetUniformLocation(handle, name.c_str()), value); 
-    }
-    void setFloat(const std::string &name, float value) const
-    { 
-        glUniform1f(glGetUniformLocation(handle, name.c_str()), value); 
-    }
-    void setMat4(const std::string &name, GLsizei count, GLboolean transpose, GLfloat* value) const
-    { 
-        glUniformMatrix4fv(glGetUniformLocation(handle, name.c_str()), count, transpose, value); 
-    }
-    void setVec3(const std::string &name, GLsizei count, GLfloat* value) const
-    { 
-        glUniform3fv(glGetUniformLocation(handle, name.c_str()), count, value);
-    }
+	{
+		handle = LoadShaders(vertex_file, geometry_file, fragment_file);
+	}
+	Shader(const char * vertex_file_path,const char * geometry_file_path,const char * fragment_file_path)
+	{
+		handle = LoadExternalShaders(vertex_file_path, geometry_file_path, fragment_file_path);
+	}
+	Shader(GLuint handle)
+	{
+		this->handle = handle;
+	}
+	~Shader()
+	{
+		//to delete
+		glDeleteProgram(handle);
+	}
+	void use()
+	{
+		glUseProgram(handle);
+	}
+	void setBool(const std::string &name, bool value) const
+	{         
+		glUniform1i(glGetUniformLocation(handle, name.c_str()), (int)value); 
+	}
+	void setInt(const std::string &name, int value) const
+	{ 
+		glUniform1i(glGetUniformLocation(handle, name.c_str()), value); 
+	}
+	void setFloat(const std::string &name, float value) const
+	{ 
+		glUniform1f(glGetUniformLocation(handle, name.c_str()), value); 
+	}
+	void setMat4(const std::string &name, GLsizei count, GLboolean transpose, GLfloat* value) const
+	{ 
+		glUniformMatrix4fv(glGetUniformLocation(handle, name.c_str()), count, transpose, value); 
+	}
+	void setVec3(const std::string &name, GLsizei count, GLfloat* value) const
+	{ 
+		glUniform3fv(glGetUniformLocation(handle, name.c_str()), count, value);
+	}
 };
 
 #endif

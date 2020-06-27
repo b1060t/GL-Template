@@ -24,8 +24,8 @@ namespace tide
 		GLfloat _pitch;
 		GLfloat _yaw;
 
-        double _prex;
-        double _prey;
+		double _prex;
+		double _prey;
 
 		double _last_time;
 	
@@ -35,14 +35,14 @@ namespace tide
 			glfwGetCursorPos(_window, &xpos, &ypos);
 			_pitch += _mouse_speed * float(_prey - ypos);
 			_yaw += _mouse_speed * float(_prex - xpos);
-            _prey = ypos;
-            _prex = xpos;
+			_prey = ypos;
+			_prex = xpos;
 		}
 		void keyboardEvent(float delta)
 		{
-            glm::quat f = _ori * glm::quat(0, 0, 0, -1) * glm::conjugate(_ori);
-            glm::vec3 forward = glm::vec3(f.x, f.y, f.z);
-            glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
+			glm::quat f = _ori * glm::quat(0, 0, 0, -1) * glm::conjugate(_ori);
+			glm::vec3 forward = glm::vec3(f.x, f.y, f.z);
+			glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
 			if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS){
 				_pos += forward * delta * _keyboard_speed;
 			}
@@ -58,9 +58,9 @@ namespace tide
 		}
 		void updateVector()
 		{
-            glm::quat qPitch = glm::angleAxis(_pitch, glm::vec3(1, 0, 0));
-            glm::quat qYaw = glm::angleAxis(_yaw, glm::vec3(0, 1, 0));
-            _ori = glm::normalize(qYaw * qPitch);
+			glm::quat qPitch = glm::angleAxis(_pitch, glm::vec3(1, 0, 0));
+			glm::quat qYaw = glm::angleAxis(_yaw, glm::vec3(0, 1, 0));
+			_ori = glm::normalize(qYaw * qPitch);
 		}
 
 	public:
@@ -100,8 +100,8 @@ namespace tide
 			updateVector();
 			keyboardEvent(delta);
 
-            glm::mat4 translate = glm::translate(glm::mat4(1.0f), -_pos);
-            view = glm::mat4_cast(glm::conjugate(_ori)) * translate;
+			glm::mat4 translate = glm::translate(glm::mat4(1.0f), -_pos);
+			view = glm::mat4_cast(glm::conjugate(_ori)) * translate;
 
 			_last_time = cur_time;
 		}

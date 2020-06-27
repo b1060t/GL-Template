@@ -10,6 +10,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <vector>
+#include <map>
 #include <mango/mango.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

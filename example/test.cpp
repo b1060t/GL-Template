@@ -86,26 +86,21 @@ int main( void )
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, normal_tex.width, normal_tex.height, 0, GL_BGR, GL_UNSIGNED_BYTE, normal_tex.image);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    
-	//Shader test_shader(
-	//    std::string(&_binary_shaders_test_vert_start, &_binary_shaders_test_vert_end - &_binary_shaders_test_vert_start),
-	//    std::string(&_binary_shaders_test_frag_start, &_binary_shaders_test_frag_end - &_binary_shaders_test_frag_start)
-	//);
 
 	Shader shade_shader(
-	    std::string(LDVAR(shaders_shade_vert), LDLEN(shaders_shade_vert)),
-	    std::string(LDVAR(shaders_shade_frag), LDLEN(shaders_shade_frag))
+		std::string(LDVAR(shaders_shade_vert), LDLEN(shaders_shade_vert)),
+		std::string(LDVAR(shaders_shade_frag), LDLEN(shaders_shade_frag))
 	);
 
-    Shader tex_shader(
-	    std::string(LDVAR(shaders_tex_vert), LDLEN(shaders_tex_vert)),
-	    std::string(LDVAR(shaders_tex_frag), LDLEN(shaders_tex_frag))
+	Shader tex_shader(
+		std::string(LDVAR(shaders_tex_vert), LDLEN(shaders_tex_vert)),
+		std::string(LDVAR(shaders_tex_frag), LDLEN(shaders_tex_frag))
 	);
 
-    Shader outline_shader(
-        std::string(LDVAR(shaders_shade_vert), LDLEN(shaders_shade_vert)),
-	    std::string(LDVAR(shaders_outline_frag), LDLEN(shaders_outline_frag))
-    );
+	Shader outline_shader(
+		std::string(LDVAR(shaders_shade_vert), LDLEN(shaders_shade_vert)),
+		std::string(LDVAR(shaders_outline_frag), LDLEN(shaders_outline_frag))
+	);
 
 
 	Assimp::Importer importer;
@@ -121,7 +116,7 @@ int main( void )
 	e.addVec3Uniform("light.ambient", glm::vec3(0.2f));
 	e.addVec3Uniform("light.specular", glm::vec3(1.0f));
 
-    Element o(sceneObjPtr, tide::THREED_OBJECT_ATTR);
+	Element o(sceneObjPtr, tide::THREED_OBJECT_ATTR);
 	o.attachShader(&outline_shader);
 	o.addTexture("material.diffuse", diffuse);
 	o.addTexture("material.specular", specular);
@@ -131,44 +126,44 @@ int main( void )
 	o.addVec3Uniform("light.ambient", glm::vec3(0.2f));
 	o.addVec3Uniform("light.specular", glm::vec3(1.0f));
 
-    Element t(const_cast<GLfloat*>(&ImageVertices[0]), const_cast<GLint*>(&indices[0]), 16*sizeof(GLfloat), 6*sizeof(GLint), tide::TWOD_TEXTURE_ATTR);
-    t.attachShader(&tex_shader);
-    t.addTexture("texture", GLuint(0));
-    t.addFloatUniform("width", WIDTH);
-    t.addFloatUniform("height", HEIGHT);
-    t.internal_model = false;
+	Element t(const_cast<GLfloat*>(&ImageVertices[0]), const_cast<GLint*>(&indices[0]), 16*sizeof(GLfloat), 6*sizeof(GLint), tide::TWOD_TEXTURE_ATTR);
+	t.attachShader(&tex_shader);
+	t.addTexture("texture", GLuint(0));
+	t.addFloatUniform("width", WIDTH);
+	t.addFloatUniform("height", HEIGHT);
+	t.internal_model = false;
 
-    e.internal_model = true;
-    e.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
-    e.setScale(glm::vec3(0.8f));
-    e.setRotation(glm::vec3(0.0f,0.0f,0.0f));
+	e.internal_model = true;
+	e.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
+	e.setScale(glm::vec3(0.8f));
+	e.setRotation(glm::vec3(0.0f,0.0f,0.0f));
 
-    o.internal_model = true;
-    o.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
-    o.setScale(glm::vec3(0.82f));
-    o.setRotation(glm::vec3(0.0f,0.0f,0.0f));
+	o.internal_model = true;
+	o.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
+	o.setScale(glm::vec3(0.82f));
+	o.setRotation(glm::vec3(0.0f,0.0f,0.0f));
 
 	Camera cam(context.getWindow(), WIDTH, HEIGHT, 45.0f, glm::vec3(0,0,4));
-    glfwSetCursorPos(context.getWindow(), WIDTH/2, HEIGHT/2);
+	glfwSetCursorPos(context.getWindow(), WIDTH/2, HEIGHT/2);
 
 
-    GLuint fbo;
-    glGenFramebuffers(1, &fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    GLuint texbuffer;
-    glGenTextures(1, &texbuffer);
-    glBindTexture(GL_TEXTURE_2D, texbuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texbuffer, 0);
-    GLuint rbo;
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo); 
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, WIDTH, HEIGHT);  
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) printf("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	GLuint fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	GLuint texbuffer;
+	glGenTextures(1, &texbuffer);
+	glBindTexture(GL_TEXTURE_2D, texbuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texbuffer, 0);
+	GLuint rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo); 
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, WIDTH, HEIGHT);  
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) printf("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	do{
@@ -177,16 +172,16 @@ int main( void )
 		float x = 1.0f * sin(glfwGetTime());
 		float z = 1.0f * cos(glfwGetTime());
 
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        glEnable(GL_DEPTH_TEST);
-	    glDepthFunc(GL_LESS);
-        glEnable(GL_STENCIL_TEST);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glEnable(GL_STENCIL_TEST);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
 
 		e.vec3dic["light.pos"]=glm::vec3(x,0.0f,z);
 		e.mat4dic["View"]=cam.view;
@@ -194,28 +189,28 @@ int main( void )
 		e.vec3dic["viewPos"]=cam.getPos();
 		e.render();
 
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00);
-        glDisable(GL_DEPTH_TEST);
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
 
-        o.vec3dic["light.pos"]=glm::vec3(x,0.0f,z);
+		o.vec3dic["light.pos"]=glm::vec3(x,0.0f,z);
 		o.mat4dic["View"]=cam.view;
 		o.mat4dic["Projection"]=cam.projection;
 		o.vec3dic["viewPos"]=cam.getPos();
 		o.render();
 
-        glStencilMask(0xFF);
-        glEnable(GL_DEPTH_TEST);
+		glStencilMask(0xFF);
+		glEnable(GL_DEPTH_TEST);
 
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_STENCIL_TEST);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_STENCIL_TEST);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-        t.texdic["texture"]=texbuffer;
-        t.render();
+		t.texdic["texture"]=texbuffer;
+		t.render();
 		
 		context.loop();
 	}

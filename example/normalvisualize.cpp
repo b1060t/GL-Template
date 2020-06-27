@@ -76,13 +76,13 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	Shader shade_shader(
-	    std::string(LDVAR(shaders_shade_vert), LDLEN(shaders_shade_vert)),
-	    std::string(LDVAR(shaders_shade_frag), LDLEN(shaders_shade_frag))
+		std::string(LDVAR(shaders_shade_vert), LDLEN(shaders_shade_vert)),
+		std::string(LDVAR(shaders_shade_frag), LDLEN(shaders_shade_frag))
 	);
     Shader normal_shader(
 		std::string(LDVAR(shaders_normal_vert), LDLEN(shaders_normal_vert)),
 		std::string(LDVAR(shaders_normal_geom), LDLEN(shaders_normal_geom)),
-	    std::string(LDVAR(shaders_normal_frag), LDLEN(shaders_normal_frag))
+		std::string(LDVAR(shaders_normal_frag), LDLEN(shaders_normal_frag))
 	);
 
 	Assimp::Importer importer;
@@ -98,12 +98,12 @@ int main()
 	e.addVec3Uniform("light.ambient", glm::vec3(0.2f));
 	e.addVec3Uniform("light.specular", glm::vec3(1.0f));
 	e.internal_model = true;
-    e.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
-    e.setScale(glm::vec3(0.8f));
-    e.setRotation(glm::vec3(0.0f,0.0f,0.0f));
+	e.setPosition(glm::vec3(-0.1f,-0.2f,-0.3f));
+	e.setScale(glm::vec3(0.8f));
+	e.setRotation(glm::vec3(0.0f,0.0f,0.0f));
 
 	Camera cam(context.getWindow(), WIDTH, HEIGHT, 45.0f, glm::vec3(0,0,4));
-    glfwSetCursorPos(context.getWindow(), WIDTH/2, HEIGHT/2);
+	glfwSetCursorPos(context.getWindow(), WIDTH/2, HEIGHT/2);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -115,7 +115,7 @@ int main()
 		float z = 1.0f * cos(glfwGetTime());
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+		glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 		e.vec3dic["light.pos"]=glm::vec3(x,0.0f,z);
 		e.mat4dic["View"]=cam.view;

@@ -2,40 +2,55 @@
 #define TIDE_RESOURCE_HPP
 
 #include <external.hpp>
+#include <element.hpp>
 
 namespace tide
 {
-	class Texture
-	{
-
-	};
-	class Model
-	{
-
-	};
 	//use singleton?
 	class ResourcePool
 	{
 	private:
-		std::map<std::string, GLuint> _texdic;
-		std::map<std::string, Shader*> _shaderdic;
-		ResourcePool()
+		ThreadPool* pool = ThreadPool::getResourcePool();
+		inline ResourcePool()
 		{
 
 		}
 	public:
-		~ResourcePool()
+		std::map<std::string, Texture*> texdic;
+		std::map<std::string, Shader*> shaderdic;
+		std::map<std::string, Model*> modeldic;
+		std::map<std::string, Light*> lightdic;
+		inline ~ResourcePool()
 		{
-			for(auto t : _texdic)
+			for(auto t : texdic)
 			{
-				glDeleteTextures(1, &t.second);
+				if(t.second)
+				{
+					delete t.second;
+					t.second == nullptr;
+				}
 			}
-			for(auto s : _shaderdic)
+			texdic.clear();
+			for(auto s : shaderdic)
 			{
-				glDeleteProgram(s.second->handle);
+				if(s.second)
+				{
+					delete s.second;
+					s.second == nullptr;
+				}
 			}
+			shaderdic.clear();
+			for(auto m : modeldic)
+			{
+				if(m.second)
+				{
+					delete m.second;
+					m.second == nullptr;
+				}
+			}
+			modeldic.clear();
 		}
-		static ResourcePool& getInstance()
+		static ResourcePool& getResourcePool()
 		{
 			static ResourcePool _instance;
 			return _instance;
@@ -43,28 +58,25 @@ namespace tide
 		ResourcePool(const ResourcePool&)=delete;
 		ResourcePool& operator=(const ResourcePool&)=delete;
 //logic
-		GLuint loadImageAsTexture(std::string name, unsigned char* ptr, size_t size, std::string&& ext=".jpg", mango::Format format=mango::FORMAT_B8G8R8)
+		void loadTexture(std::string name, const char* ptr, size_t size, std::string&& ext=".jpg", mango::Format format=mango::FORMAT_B8G8R8)
 		{
-			mango::Memory mem(ptr, size);
-			mango::Bitmap img(mem, ext, format);
-			GLuint handle;
-			glGenTextures(1, &handle);
-			glBindTexture(GL_TEXTURE_2D, handle);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.width, img.height, 0, GL_BGR, GL_UNSIGNED_BYTE, img.image);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			_texdic[name] = handle;
-			return handle;
+			Texture* t = new Texture(ptr, size, ext, format);
+			texdic[name] = t;
 		}
 		void loadShader(std::string name, std::string&& vertex, std::string&& geom, std::string&& frag)
 		{
-			Shader shader(vertex, geom, frag);
-			_shaderdic[name] = &shader;
+			Shader* s = new Shader(vertex, geom, frag);
+			shaderdic[name] = s;
 		}
 		void loadShader(std::string name, std::string&& vertex, std::string&& frag)
 		{
-			Shader shader(vertex, frag);
-			_shaderdic[name] = &shader;
+			Shader* s = new Shader(vertex, frag);
+			shaderdic[name] = s;
+		}
+		void loadModel(std::string name, char* ptr, size_t size)
+		{
+			Model* m = new Model(ptr, size);
+			modeldic[name] = m;
 		}
 	};
 }

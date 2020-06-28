@@ -17,6 +17,6 @@ void main()
     mat4 MVP = Projection * View * Model;
     gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
     UV = vertexUV;
-    Normal = vertexNorm;
-    Pos = vertexPosition_modelspace;
+    Normal = mat3(transpose(inverse(Model)))*vertexNorm;
+    Pos = vec3(Model*vec4(vertexPosition_modelspace,1.0));
 }

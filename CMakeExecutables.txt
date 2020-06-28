@@ -124,6 +124,30 @@ if(TIDE_DEMO)
     ${CMAKE_THREAD_LIBS_INIT}
   )
   add_dependencies(defog rscembedding)
+
+  ADD_RESOURCES(SHADOW_RES
+      shaders/plane.vert
+      shaders/plane.frag
+      misc/wood.png
+	  misc/skybox/back.jpg
+      misc/skybox/bottom.jpg
+      misc/skybox/front.jpg
+      misc/skybox/left.jpg
+      misc/skybox/right.jpg
+      misc/skybox/top.jpg
+      shaders/skybox.vert
+      shaders/skybox.frag
+  )
+  add_executable(shadow 
+      example/shadow.cpp
+      ${CPP_FILES}
+      ${SHADOW_RES}
+  )
+  target_link_libraries(shadow
+    ${ALL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+  add_dependencies(shadow rscembedding)
 endif(TIDE_DEMO)
 
 #参照下方格式添加

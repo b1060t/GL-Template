@@ -5,6 +5,7 @@
 #include <element.hpp>
 #include <camera.hpp>
 #include <context.hpp>
+#include <resource.hpp>
 
 #define PI 3.1415926f
 

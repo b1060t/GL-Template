@@ -2,6 +2,7 @@
 #define TIDE_EXTERNAL_HPP
 
 #include <shader.hpp>
+#include <threadpool.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -11,6 +12,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <vector>
 #include <map>
+#include <future>
 #include <mango/mango.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

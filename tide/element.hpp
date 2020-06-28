@@ -2,7 +2,6 @@
 #define TIDE_ELEMENT_HPP
 
 #include <external.hpp>
-#include <resource.hpp>
 
 namespace tide
 {
@@ -15,6 +14,79 @@ namespace tide
 		GLsizei offset;
 	};
 
+	class Shader
+	{
+	public:
+		GLuint handle;
+		Shader(std::string vertex_file,std::string fragment_file)
+		{
+			handle = LoadShaders(vertex_file, fragment_file);
+		}
+		Shader(std::string vertex_file,std::string geometry_file,std::string fragment_file)
+		{
+			handle = LoadShaders(vertex_file, geometry_file, fragment_file);
+		}
+		Shader(const char * vertex_file_path,const char * geometry_file_path,const char * fragment_file_path)
+		{
+			handle = LoadExternalShaders(vertex_file_path, geometry_file_path, fragment_file_path);
+		}
+		Shader(GLuint handle)
+		{
+			this->handle = handle;
+		}
+		~Shader()
+		{
+			glDeleteProgram(handle);
+		}
+		void use()
+		{
+			glUseProgram(handle);
+		}
+		void setBool(const std::string &name, bool value) const
+		{
+			glUniform1i(glGetUniformLocation(handle, name.c_str()), (int)value); 
+		}
+		void setInt(const std::string &name, int value) const
+		{
+			glUniform1i(glGetUniformLocation(handle, name.c_str()), value); 
+		}
+		void setFloat(const std::string &name, float value) const
+		{
+			glUniform1f(glGetUniformLocation(handle, name.c_str()), value); 
+		}
+		void setMat4(const std::string &name, GLsizei count, GLboolean transpose, GLfloat* value) const
+		{
+			glUniformMatrix4fv(glGetUniformLocation(handle, name.c_str()), count, transpose, value); 
+		}
+		void setVec3(const std::string &name, GLsizei count, GLfloat* value) const
+		{
+			glUniform3fv(glGetUniformLocation(handle, name.c_str()), count, value);
+		}
+	};
+	class Texture
+	{
+	public:
+		GLuint handle;
+		Texture(const char* ptr, size_t size, std::string ext=".jpg", mango::Format format=mango::FORMAT_B8G8R8)
+		{
+			mango::Memory mem((unsigned char*)ptr, size);
+			mango::Bitmap img(mem, ext, format);
+			glGenTextures(1, &handle);
+			glBindTexture(GL_TEXTURE_2D, handle);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.width, img.height, 0, GL_BGR, GL_UNSIGNED_BYTE, img.image);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+		~Texture()
+		{
+			glDeleteTextures(1, &handle);
+		}
+	};
+	class Light
+	{
+
+	};
 	class Element
 	{
 	private:
@@ -300,6 +372,29 @@ namespace tide
 		void setScale(glm::vec3 scale)
 		{
 			_scale = scale;
+		}
+	};
+	class Model
+	{
+	public:
+		Element* element;
+		Model(char* ptr, size_t size)
+		{
+			static Assimp::Importer importer;
+			const aiScene* obj = importer.ReadFileFromMemory((void*)ptr, size, aiProcess_ValidateDataStructure);
+			element = new Element(obj, {
+				{3, GL_FLOAT, GL_FALSE, 8, 0}, //position x,y,z
+				{2, GL_FLOAT, GL_FALSE, 8, 3}, //uv coordinates u,v
+				{3, GL_FLOAT, GL_FALSE, 8, 5}  //normal x,y,z
+			});
+		}
+		~Model()
+		{
+			if(element)
+			{
+				delete element;
+				element = nullptr;
+			}
 		}
 	};
 }

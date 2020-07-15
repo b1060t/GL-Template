@@ -3,3 +3,7 @@ option(TIDE_EXCLUDE "exclude tide framework" OFF)
 option(TIDE_ASSIMP "include assimp" ON)
 option(TIDE_IMGUI "include imgui" ON)
 option(TIDE_MANGO "include mango" ON)
+
+if(TIDE_EXCLUDE)
+    set(TIDE_DEMO OFF)
+endif()

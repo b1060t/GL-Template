@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-![Linux](https://github.com/Biobots/GL-Template/workflows/Linux/badge.svg) ![Windows](https://github.com/Biobots/GL-Template/workflows/Windows/badge.svg) ![OSX](https://github.com/Biobots/GL-Template/workflows/OSX/badge.svg)
+[![Build Status](https://travis-ci.com/Biobots/GL-Template.svg?branch=master)](https://travis-ci.com/Biobots/GL-Template) ![Linux](https://github.com/Biobots/GL-Template/workflows/Linux/badge.svg) ![Windows](https://github.com/Biobots/GL-Template/workflows/Windows/badge.svg) ![OSX](https://github.com/Biobots/GL-Template/workflows/OSX/badge.svg)
 
 一个没有其他外部依赖的OpenGL程序模板。起因是在不同平台重复配置相关依赖项过于繁琐，故使用CMake创建了一个多平台可用的模板，并对部分常用功能进行了封装。同时实现了简单的将图片、shader等资源嵌入可执行程序的功能。
 

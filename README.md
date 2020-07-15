@@ -2,7 +2,7 @@
 
 English | [中文](README-CN.md)
 
-![Linux](https://github.com/Biobots/GL-Template/workflows/Linux/badge.svg) ![Windows](https://github.com/Biobots/GL-Template/workflows/Windows/badge.svg) ![OSX](https://github.com/Biobots/GL-Template/workflows/OSX/badge.svg)
+[![Build Status](https://travis-ci.com/Biobots/GL-Template.svg?branch=master)](https://travis-ci.com/Biobots/GL-Template) ![Linux](https://github.com/Biobots/GL-Template/workflows/Linux/badge.svg) ![Windows](https://github.com/Biobots/GL-Template/workflows/Windows/badge.svg) ![OSX](https://github.com/Biobots/GL-Template/workflows/OSX/badge.svg)
 
 A simple OpenGL application template aiming at reducing the procedures of varied configurations on different platforms with the help of CMake. Some OpenGL functions are also packaged for reference(Under development). An additional function is also provided to embed resource files such as images, shaders into a single executable file.
 

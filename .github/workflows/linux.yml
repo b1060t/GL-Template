@@ -12,7 +12,7 @@ jobs:
     - name: install dependencies
       run: |
         sudo apt-get install ninja-build -y
-        sudo apt-get install libx11-dev libgl1-mesa-dev libglu1-mesa-dev
+        sudo apt-get install freeglut3-dev
         sudo apt-get install xorg-dev
     - name: download submodule
       run: git submodule update --init

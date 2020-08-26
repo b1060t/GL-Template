@@ -2,7 +2,6 @@
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
 set(GLFW_INSTALL OFF CACHE BOOL "Generate installation target")
 add_subdirectory(glfw)
-set_target_properties(docs PROPERTIES EXCLUDE_FROM_ALL TRUE) #disable glfw doc
 include_directories(
     glfw/include/
     glew/include/
